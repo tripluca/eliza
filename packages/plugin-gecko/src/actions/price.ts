@@ -10,12 +10,9 @@ import {
     ModelClass,
 } from "@ai16z/eliza";
 import { coingeckoProvider } from "../providers/coins";
-import {
-    PriceLookupContent,
-    PriceLookupSchema,
-    isPriceLookupContent,
-} from "../types";
+import { PriceLookupContent, PriceLookupSchema } from "../types";
 import type { PriceResponse } from "../types";
+import { z } from "zod";
 
 export const getPriceAction: Action = {
     name: "GET_COIN_PRICE",
@@ -61,7 +58,9 @@ export const getPriceAction: Action = {
                 schema: PriceLookupSchema,
             });
 
-            if (!isPriceLookupContent(priceRequest.object)) {
+            const result = PriceLookupSchema.safeParse(priceRequest.object);
+
+            if (!result.success) {
                 callback(
                     {
                         text: "Invalid coin name specified.",
@@ -71,7 +70,7 @@ export const getPriceAction: Action = {
                 return;
             }
 
-            const searchTerm = priceRequest.object.coinName.toLowerCase();
+            const searchTerm = result.data.coinName.toLowerCase();
 
             // Find the coin in our supported coins list
             const coin = supportedCoins.find(

@@ -14,3 +14,5 @@ export const coingeckoPlugin: Plugin = {
     services: [],
     actions: [getPriceAction],
 };
+
+export default coingeckoPlugin;

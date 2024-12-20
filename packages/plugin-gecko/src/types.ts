@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface CoinListEntry {
     id: string;
     symbol: string;
@@ -10,20 +12,8 @@ export interface PriceResponse {
     };
 }
 
-export const PriceLookupSchema = {
-    type: "object",
-    properties: {
-        coinName: { type: "string" },
-    },
-    required: ["coinName"],
-};
+export const PriceLookupSchema = z.object({
+    coinName: z.string(),
+});
 
-export interface PriceLookupContent {
-    coinName: string;
-}
-
-export const isPriceLookupContent = (
-    content: any
-): content is PriceLookupContent => {
-    return typeof content === "object" && typeof content.coinName === "string";
-};
+export type PriceLookupContent = z.infer<typeof PriceLookupSchema>;
