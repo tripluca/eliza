@@ -41,6 +41,7 @@ import {
 } from "@ai16z/plugin-coinbase";
 import { confluxPlugin } from "@ai16z/plugin-conflux";
 import { evmPlugin } from "@ai16z/plugin-evm";
+import { gecko } from "@ai16z/plugin-gecko";
 import { storyPlugin } from "@ai16z/plugin-story";
 import { flowPlugin } from "@ai16z/plugin-flow";
 import { imageGenerationPlugin } from "@ai16z/plugin-image-generation";
@@ -210,11 +211,11 @@ export async function loadCharacters(
 export function getTokenForProvider(
     provider: ModelProviderName,
     character: Character
-):string {
+): string {
     switch (provider) {
         // no key needed for llama_local
         case ModelProviderName.LLAMALOCAL:
-            return ''
+            return "";
         case ModelProviderName.OPENAI:
             return (
                 character.settings?.secrets?.OPENAI_API_KEY ||
@@ -310,9 +311,9 @@ export function getTokenForProvider(
                 settings.AKASH_CHAT_API_KEY
             );
         default:
-            const errorMessage = `Failed to get token - unsupported model provider: ${provider}`
-            elizaLogger.error(errorMessage)
-            throw new Error(errorMessage)
+            const errorMessage = `Failed to get token - unsupported model provider: ${provider}`;
+            elizaLogger.error(errorMessage);
+            throw new Error(errorMessage);
     }
 }
 
