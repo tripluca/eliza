@@ -74,7 +74,7 @@ import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
 import yargs from "yargs";
-import { webSearchPlugin } from "../../packages/plugin-web-search/src";
+import { webSearchPlugin } from "@ai16z/plugin-web-search";
 
 export const wait = (minTime: number = 1000, maxTime: number = 3000) => {
     const waitTime =
