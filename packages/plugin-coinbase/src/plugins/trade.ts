@@ -296,8 +296,10 @@ export const executeTradeAction: Action = {
 };
 
 export const tradePlugin: Plugin = {
-    name: "tradePlugin",
-    description: "Enables asset trading using the Coinbase SDK.",
-    actions: [executeTradeAction],
+    name: "trade",
+    description: "Execute trades between assets using Coinbase SDK",
     providers: [tradeProvider],
+    actions: [executeTradeAction],
 };
+
+export default tradePlugin;

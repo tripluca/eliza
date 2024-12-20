@@ -14,6 +14,8 @@ export const plugins = {
     advancedTradePlugin,
 };
 
+export default tradePlugin;
+
 export * from "./plugins/massPayments";
 export * from "./plugins/commerce";
 export * from "./plugins/trade";

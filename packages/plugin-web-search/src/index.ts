@@ -6,6 +6,7 @@ import {
     Memory,
     Plugin,
     State,
+    Provider,
 } from "@ai16z/eliza";
 import { generateWebSearch } from "@ai16z/eliza";
 
@@ -180,9 +181,10 @@ const webSearch: Action = {
 } as Action;
 
 export const webSearchPlugin: Plugin = {
-    name: "webSearch",
-    description: "Search web",
-    actions: [webSearch],
-    evaluators: [],
+    name: "web-search",
+    description: "Search the web using Tavily API",
     providers: [],
+    actions: [webSearch],
 };
+
+export type { Plugin, Action, Provider };
