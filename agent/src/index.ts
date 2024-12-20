@@ -1,3 +1,20 @@
+import { fileURLToPath } from "url";
+import { dirname, resolve } from 'path';
+import * as dotenv from 'dotenv';
+import { config } from 'dotenv';
+
+// First, set up __filename and __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Then load environment variables
+config({ path: resolve(__dirname, '../../.env') });
+
+console.log('Environment loaded:', {
+    DISCORD_API_TOKEN_JUAN: process.env.DISCORD_API_TOKEN_JUAN?.slice(0,10) + '...',
+    DISCORD_API_TOKEN_JULIE: process.env.DISCORD_API_TOKEN_JULIE?.slice(0,10) + '...'
+});
+
 import { PostgresDatabaseAdapter } from "@ai16z/adapter-postgres";
 import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
 import { AutoClientInterface } from "@ai16z/client-auto";
@@ -56,11 +73,7 @@ import { zksyncEraPlugin } from "@ai16z/plugin-zksync-era";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import yargs from "yargs";
-
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename); // get the name of the directory
 
 export const wait = (minTime: number = 1000, maxTime: number = 3000) => {
     const waitTime =
@@ -341,6 +354,15 @@ export async function initializeClients(
     character: Character,
     runtime: IAgentRuntime
 ) {
+    // Add this debug logging with full token info
+    console.log('Debug token info:', {
+        name: character.name,
+        rawToken: character.settings?.secrets?.DISCORD_API_TOKEN,
+        envVarName: `DISCORD_API_TOKEN_${character.name.toUpperCase()}`,
+        envValue: process.env[`DISCORD_API_TOKEN_${character.name.toUpperCase()}`],
+        getSecretValue: getSecret(character, 'DISCORD_API_TOKEN')
+    });
+
     // each client can only register once
     // and if we want two we can explicitly support it
     const clients: Record<string, any> = {};
@@ -354,6 +376,16 @@ export async function initializeClients(
     }
 
     if (clientTypes.includes(Clients.DISCORD)) {
+        // Get the resolved token
+        const token = getSecret(character, 'DISCORD_API_TOKEN');
+        console.log('Initializing Discord client with token length:', token?.length);
+        console.log('Token starts with:', token?.substring(0, 10));
+        
+        // Pass the token through the character's settings
+        character.settings = character.settings || {};
+        character.settings.secrets = character.settings.secrets || {};
+        character.settings.secrets.DISCORD_API_TOKEN = token;
+        
         const discordClient = await DiscordClientInterface.start(runtime);
         if (discordClient) clients.discord = discordClient;
     }
@@ -435,8 +467,26 @@ function isFalsish(input: any): boolean {
     return falsishValues.includes(value.trim().toLowerCase());
 }
 
-function getSecret(character: Character, secret: string) {
-    return character.settings?.secrets?.[secret] || process.env[secret];
+export function getSecret(character: Character, secret: string) {
+    const rawValue = character.settings?.secrets?.[secret];
+    
+    console.log('getSecret debug:', {
+        secret,
+        rawValue,
+        isVariable: rawValue?.startsWith('${') && rawValue?.endsWith('}'),
+        envVarName: rawValue?.slice(2, -1),
+        resolvedValue: rawValue?.startsWith('${') ? process.env[rawValue.slice(2, -1)] : rawValue
+    });
+    
+    // If the value starts with ${, it's a variable reference
+    if (rawValue?.startsWith('${') && rawValue?.endsWith('}')) {
+        // Extract the environment variable name
+        const envVarName = rawValue.slice(2, -1);
+        return process.env[envVarName];
+    }
+    
+    // Otherwise return the raw value or fall back to process.env
+    return rawValue || process.env[secret];
 }
 
 let nodePlugin: any | undefined;
