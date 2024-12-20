@@ -39,7 +39,37 @@ export class DiscordClient extends EventEmitter {
     constructor(runtime: IAgentRuntime) {
         super();
 
-        this.apiToken = runtime.getSetting("DISCORD_API_TOKEN") as string;
+        this.runtime = runtime;
+        this.character = runtime.character;
+
+        // Get the token using runtime's getSecret
+        const token = this.character?.settings?.secrets?.DISCORD_API_TOKEN;
+        
+        elizaLogger.debug('Token resolution debug:', {
+            characterName: this.character.name,
+            rawToken: token,
+            isEnvVar: token?.startsWith('${') && token?.endsWith('}'),
+            envVarName: token?.startsWith('${') ? token.slice(2, -1) : null,
+            envValue: token?.startsWith('${') ? process.env[token.slice(2, -1)] : null
+        });
+
+        // If it's a variable reference (${...}), resolve it from environment
+        if (token?.startsWith('${') && token?.endsWith('}')) {
+            const envVarName = token.slice(2, -1);
+            this.apiToken = process.env[envVarName] || '';
+            elizaLogger.debug('Discord API Token from env:', envVarName, this.apiToken ? 'Token present' : 'Token missing');
+        } else {
+            this.apiToken = token || '';
+            elizaLogger.debug('Discord API Token from settings:', this.apiToken ? 'Token present' : 'Token missing');
+        }
+
+        elizaLogger.debug('Final token value:', {
+            tokenLength: this.apiToken?.length || 0,
+            tokenStart: this.apiToken?.substring(0, 4) || '',
+            tokenEnd: this.apiToken?.substring(this.apiToken.length - 4) || '',
+            isTokenEmpty: !this.apiToken
+        });
+        
         this.client = new Client({
             intents: [
                 GatewayIntentBits.Guilds,
@@ -59,12 +89,14 @@ export class DiscordClient extends EventEmitter {
             ],
         });
 
-        this.runtime = runtime;
         this.voiceManager = new VoiceManager(this);
         this.messageManager = new MessageManager(this, this.voiceManager);
 
         this.client.once(Events.ClientReady, this.onClientReady.bind(this));
-        this.client.login(this.apiToken);
+        elizaLogger.debug('Attempting Discord client login...');
+        this.client.login(this.apiToken).catch(error => {
+            elizaLogger.error('Discord client login failed:', error);
+        });
 
         this.setupEventListeners();
 
