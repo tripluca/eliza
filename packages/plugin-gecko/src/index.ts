@@ -1,16 +1,16 @@
-import { Plugin } from "@ai16z/eliza";
-import { continueAction } from "./actions/fetchInfo.ts";
+export * from "./actions/price";
+export * from "./providers/coins";
+export * from "./types";
 
-import { timeProvider } from "./providers/coinList.ts";
+import type { Plugin } from "@ai16z/eliza";
+import { getPriceAction } from "./actions/price";
+import { coingeckoProvider } from "./providers/coins";
 
-export * as actions from "./actions/index.ts";
-export * as evaluators from "./evaluators/index.ts";
-export * as providers from "./providers/index.ts";
-
-export const geckoPlugin: Plugin = {
-    name: "gecko",
-    description: "Agent gecko with basic actions and evaluators",
-    actions: [fetchInfo],
+export const coingeckoPlugin: Plugin = {
+    name: "coingecko",
+    description: "CoinGecko cryptocurrency price integration plugin",
+    providers: [coingeckoProvider],
     evaluators: [],
-    providers: [coinList],
+    services: [],
+    actions: [getPriceAction],
 };
