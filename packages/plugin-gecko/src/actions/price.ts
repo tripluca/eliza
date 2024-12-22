@@ -169,21 +169,6 @@ export const getPriceAction: Action = {
 
             // Use the coin with the highest market cap
             const { coin, price, marketCap } = validResults[0];
-
-            // Format the price and market cap
-            const priceUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coin.id}&vs_currencies=usd&include_market_cap=true`;
-            const priceResponse = await fetch(priceUrl, {
-                method: "GET",
-                headers: {
-                    accept: "application/json",
-                    "x-cg-demo-api-key": apiKey,
-                },
-            });
-
-            if (!priceResponse.ok) {
-                throw new Error(`HTTP error! status: ${priceResponse.status}`);
-            }
-
             const formattedMarketCap = formatMarketCap(marketCap);
 
             // If there were multiple matches, add a note about the selection
@@ -192,9 +177,11 @@ export const getPriceAction: Action = {
                     ? `\n(Selected based on highest market cap among ${validResults.length} matching coins)`
                     : "";
 
+            elizaLogger.log(multipleMatchesNote);
+
             callback(
                 {
-                    text: `Current price for ${coin.name} (${coin.symbol.toUpperCase()}): ${price.toFixed(2)} USD\nMarket Cap: ${formattedMarketCap} USD${multipleMatchesNote}`,
+                    text: `Current price for ${coin.name} (${coin.symbol.toUpperCase()}): ${price.toFixed(2)} USD\nMarket Cap: ${formattedMarketCap} USD`,
                 },
                 []
             );
