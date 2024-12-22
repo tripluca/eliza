@@ -1,6 +1,10 @@
 # `@ai16z/plugin-gecko`
 
-This plugin provides actions and providers for interacting with CoinGecko API
+This plugin provides actions and providers for interacting with CoinGecko API, using free version
+https://docs.coingecko.com/v3.0.1/reference/introduction
+
+to get the Free Public API access, create your API key here
+https://www.coingecko.com/en/developers/dashboard
 
 ---
 

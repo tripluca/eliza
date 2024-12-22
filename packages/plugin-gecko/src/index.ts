@@ -4,6 +4,7 @@ export * from "./types";
 
 import type { Plugin } from "@ai16z/eliza";
 import { getPriceAction } from "./actions/price";
+import { getPriceByAddressAction } from "./actions/pricePerAddress";
 import { coingeckoProvider } from "./providers/coins";
 
 export const coingeckoPlugin: Plugin = {
@@ -12,7 +13,7 @@ export const coingeckoPlugin: Plugin = {
     providers: [coingeckoProvider],
     evaluators: [],
     services: [],
-    actions: [getPriceAction],
+    actions: [getPriceAction, getPriceByAddressAction],
 };
 
 export default coingeckoPlugin;
