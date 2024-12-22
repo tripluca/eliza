@@ -38,4 +38,16 @@ Get the current price and market cap of a coin/token from CoingGecko API, provid
 Get me price of Pendle token
 ```
 
+### Get Price per address
+
+Get the current price and market cap of a coin/token from CoingGecko API by providing currency address and base platform
+
+**Example usage:**
+
+```env
+Get me price for 0x4f9fd6be4a90f2620860d680c0d4d5fb53d1a825 on Base
+
+Get price for HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC on Solana
+```
+
 ---
