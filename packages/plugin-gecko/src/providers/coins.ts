@@ -1,5 +1,5 @@
 import { elizaLogger, IAgentRuntime, Memory, Provider } from "@ai16z/eliza";
-import type { CoinListEntry } from "../types";
+import type { CoinListEntry } from "../types.ts";
 
 export const coingeckoProvider: Provider = {
     get: async (runtime: IAgentRuntime, _message: Memory) => {

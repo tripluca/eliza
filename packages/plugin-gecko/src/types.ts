@@ -9,6 +9,7 @@ export interface CoinListEntry {
 export interface PriceResponse {
     [key: string]: {
         usd: number;
+        usd_market_cap: number;
     };
 }
 
