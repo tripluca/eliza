@@ -1204,11 +1204,16 @@ export const generateWebSearch = async (
     const apiUrl = "https://api.tavily.com/search";
     const apiKey = runtime.getSetting("TAVILY_API_KEY");
 
+    if (!apiKey) {
+        throw new Error("TAVILY_API_KEY is not set");
+    }
+
     try {
         const response = await fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "X-Api-Key": apiKey,
             },
             body: JSON.stringify({
                 api_key: apiKey,
@@ -1218,15 +1223,20 @@ export const generateWebSearch = async (
         });
 
         if (!response.ok) {
-            throw new elizaLogger.error(
-                `HTTP error! status: ${response.status}`
+            const errorText = await response.text();
+            throw new Error(
+                `HTTP error! status: ${response.status}, body: ${errorText}`
             );
         }
 
         const data: SearchResponse = await response.json();
+        if (!data) {
+            throw new Error("No data returned from Tavily API");
+        }
         return data;
     } catch (error) {
-        elizaLogger.error("Error:", error);
+        elizaLogger.error("Error during web search:", error);
+        throw error; // Re-throw to let caller handle it
     }
 };
 /**

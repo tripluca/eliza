@@ -198,9 +198,6 @@ importers:
       '@ai16z/plugin-ton':
         specifier: workspace:*
         version: link:../packages/plugin-ton
-      '@ai16z/plugin-web-search':
-        specifier: workspace:*
-        version: link:../packages/plugin-web-search
       '@ai16z/plugin-zksync-era':
         specifier: workspace:*
         version: link:../packages/plugin-zksync-era

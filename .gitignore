@@ -52,3 +52,6 @@ tsup.config.bundled_*.mjs
 
 coverage
 .eslintcache
+
+.pnpm-store/
+node_modules/

@@ -47,32 +47,53 @@ const webSearch: Action = {
         const webSearchPrompt = message.content.text;
         elizaLogger.log("web search prompt received:", webSearchPrompt);
 
-        elizaLogger.log("Generating image with prompt:", webSearchPrompt);
-        const searchResponse = await generateWebSearch(
-            webSearchPrompt,
-            runtime
-        );
+        const apiKey = runtime.getSetting("TAVILY_API_KEY");
+        elizaLogger.log("Tavily API Key present:", !!apiKey);
+        elizaLogger.log("Tavily API Key length:", apiKey?.length);
 
-        if (searchResponse && searchResponse.results.length) {
-            const responseList = searchResponse.answer
-                ? `${searchResponse.answer}${
-                      Array.isArray(searchResponse.results) &&
-                      searchResponse.results.length > 0
-                          ? `\n\nFor more details, you can check out these resources:\n${searchResponse.results
-                                .map(
-                                    (result: SearchResult, index: number) =>
-                                        `${index + 1}. [${result.title}](${result.url})`
-                                )
-                                .join("\n")}`
-                          : ""
-                  }`
-                : "";
-
+        if (!apiKey) {
             callback({
-                text: responseList,
+                text: "I apologize, but I cannot perform web searches at the moment because the Tavily API key is not configured. Please make sure to set up a valid TAVILY_API_KEY in the environment.",
             });
-        } else {
-            elizaLogger.error("search failed or returned no data.");
+            return;
+        }
+
+        elizaLogger.log("Generating web search with prompt:", webSearchPrompt);
+        try {
+            const searchResponse = await generateWebSearch(
+                webSearchPrompt,
+                runtime
+            );
+            elizaLogger.log("Search response received:", searchResponse);
+
+            if (searchResponse && searchResponse.results && searchResponse.results.length) {
+                const responseList = searchResponse.answer
+                    ? `${searchResponse.answer}${
+                          Array.isArray(searchResponse.results) &&
+                          searchResponse.results.length > 0
+                              ? `\n\nFor more details, you can check out these resources:\n${searchResponse.results
+                                    .map(
+                                        (result: SearchResult, index: number) =>
+                                            `${index + 1}. [${result.title}](${result.url})`
+                                    )
+                                    .join("\n")}`
+                              : ""
+                      }`
+                    : "";
+
+                callback({
+                    text: responseList || "I found some results but couldn't generate a summary. Please try rephrasing your search.",
+                });
+            } else {
+                callback({
+                    text: "I apologize, but the search didn't return any results. This could be due to an API issue or no relevant results found. Please try again or rephrase your search.",
+                });
+            }
+        } catch (error) {
+            elizaLogger.error("Error during web search:", error);
+            callback({
+                text: `I encountered an error while searching: ${error.message}. This might be due to an invalid API key or service issues. Please try again later.`,
+            });
         }
     },
     examples: [
@@ -178,13 +199,15 @@ const webSearch: Action = {
             },
         ],
     ],
-} as Action;
+};
 
 export const webSearchPlugin: Plugin = {
     name: "web-search",
     description: "Search the web using Tavily API",
-    providers: [],
     actions: [webSearch],
+    evaluators: [],
+    providers: [],
 };
 
+export default webSearchPlugin;
 export type { Plugin, Action, Provider };
