@@ -108,6 +108,25 @@ export const getPriceByAddressAction: Action = {
 
             const { chainId, tokenAddress } = result.data;
 
+            // First, fetch token metadata to get the name
+            const metadataUrl = `https://api.coingecko.com/api/v3/coins/${chainId}/contract/${tokenAddress}`;
+            const metadataResponse = await fetch(metadataUrl, {
+                method: "GET",
+                headers: {
+                    accept: "application/json",
+                    "x-cg-demo-api-key": apiKey,
+                },
+            });
+
+            let tokenName = null;
+            let tokenSymbol = null;
+
+            if (metadataResponse.ok) {
+                const metadata = await metadataResponse.json();
+                tokenName = metadata.name;
+                tokenSymbol = metadata.symbol?.toUpperCase();
+            }
+
             // Format the URL for token price lookup
             const url = `https://api.coingecko.com/api/v3/simple/token_price/${chainId}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_market_cap=true`;
 
@@ -142,9 +161,15 @@ export const getPriceByAddressAction: Action = {
                 ? `\nMarket Cap: $${formatMarketCap(marketCap)} USD`
                 : "";
 
+            // Prepare token identifier string
+            const tokenIdentifier =
+                tokenName && tokenSymbol
+                    ? `${tokenName} (${tokenSymbol})`
+                    : `token`;
+
             callback(
                 {
-                    text: `Current price for token (${tokenAddress}) on ${chainId}: $${price.toFixed(6)} USD${formattedMarketCap}`,
+                    text: `Current price for ${tokenIdentifier}\nAddress: ${tokenAddress}\nChain: ${chainId}\nPrice: ${price.toFixed(6)} USD${formattedMarketCap}`,
                 },
                 []
             );
@@ -169,7 +194,7 @@ export const getPriceByAddressAction: Action = {
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Current price for token (0x4f9fd6be4a90f2620860d680c0d4d5fb53d1a825) on ethereum: $1.234567 USD\nMarket Cap: $45.6 million USD",
+                    text: "Current price for Compound (COMP)\nAddress: 0x4f9fd6be4a90f2620860d680c0d4d5fb53d1a825\nChain: ethereum\nPrice: $1.234567 USD\nMarket Cap: $45.6 million USD",
                 },
             },
         ],
@@ -183,7 +208,7 @@ export const getPriceByAddressAction: Action = {
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Current price for token (0x2260fac5e5542a773aa44fbcfedf7c193bc2c599) on ethereum: $42000.123456 USD\nMarket Cap: $2.1 billion USD",
+                    text: "Current price for Wrapped Bitcoin (WBTC)\nAddress: 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599\nChain: ethereum\nPrice: $42000.123456 USD\nMarket Cap: $2.1 billion USD",
                 },
             },
         ],
