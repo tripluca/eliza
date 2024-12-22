@@ -10,15 +10,7 @@ import {
     ModelClass,
 } from "@ai16z/eliza";
 
-import { z } from "zod";
-
-// Schema for address lookup
-const AddressLookupSchema = z.object({
-    chainId: z.string(),
-    tokenAddress: z.string(),
-});
-
-type AddressLookupContent = z.infer<typeof AddressLookupSchema>;
+import { AddressLookupSchema, AddressLookupContent } from "../types.ts";
 
 // Template for extracting chain and address
 export const addressTemplate = `Use JUST the last message from recent messages
@@ -106,7 +98,9 @@ export const getPriceByAddressAction: Action = {
                 return;
             }
 
-            const { chainId, tokenAddress } = result.data;
+            const { chainId: rawChainId, tokenAddress } = result.data;
+            // Ensure chain ID is lowercase
+            const chainId = rawChainId.toLowerCase();
 
             // First, fetch token metadata to get the name
             const metadataUrl = `https://api.coingecko.com/api/v3/coins/${chainId}/contract/${tokenAddress}`;
@@ -143,7 +137,23 @@ export const getPriceByAddressAction: Action = {
             }
 
             const priceData = await priceResponse.json();
-            const tokenData = priceData[tokenAddress.toLowerCase()];
+
+            // Try to find the token data regardless of case
+            let tokenData =
+                priceData[tokenAddress] ||
+                priceData[tokenAddress.toLowerCase()] ||
+                priceData[tokenAddress.toUpperCase()];
+
+            // If still not found, try to find by searching through keys
+            if (!tokenData) {
+                const priceDataKeys = Object.keys(priceData);
+                const matchingKey = priceDataKeys.find(
+                    (key) => key.toLowerCase() === tokenAddress.toLowerCase()
+                );
+                if (matchingKey) {
+                    tokenData = priceData[matchingKey];
+                }
+            }
 
             if (!tokenData || !tokenData.usd) {
                 callback(

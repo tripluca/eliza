@@ -18,3 +18,10 @@ export const PriceLookupSchema = z.object({
 });
 
 export type PriceLookupContent = z.infer<typeof PriceLookupSchema>;
+
+export const AddressLookupSchema = z.object({
+    chainId: z.string(),
+    tokenAddress: z.string(),
+});
+
+export type AddressLookupContent = z.infer<typeof AddressLookupSchema>;
