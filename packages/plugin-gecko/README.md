@@ -1,4 +1,4 @@
-# `@ai16z/plugin-gecko`
+# `@elizaos/plugin-gecko`
 
 This plugin provides actions and providers for interacting with CoinGecko API, using free version
 https://docs.coingecko.com/v3.0.1/reference/introduction

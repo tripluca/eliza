@@ -8,7 +8,7 @@ import {
     composeContext,
     generateObject,
     ModelClass,
-} from "@ai16z/eliza";
+} from "@elizaos/core";
 
 import { coingeckoProvider } from "../providers/coins";
 import { PriceLookupContent, PriceLookupSchema } from "../types.ts";

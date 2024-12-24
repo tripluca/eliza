@@ -8,7 +8,7 @@ import {
     composeContext,
     generateObject,
     ModelClass,
-} from "@ai16z/eliza";
+} from "@elizaos/core";
 
 import { AddressLookupSchema, AddressLookupContent } from "../types.ts";
 

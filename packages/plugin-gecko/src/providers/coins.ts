@@ -1,4 +1,4 @@
-import { elizaLogger, IAgentRuntime, Memory, Provider } from "@ai16z/eliza";
+import { elizaLogger, IAgentRuntime, Memory, Provider } from "@elizaos/core";
 import type { CoinListEntry } from "../types.ts";
 
 export const coingeckoProvider: Provider = {
