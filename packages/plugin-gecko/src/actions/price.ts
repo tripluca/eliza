@@ -6,18 +6,15 @@ import {
     HandlerCallback,
     State,
     composeContext,
-    generateObject,
+    generateMessageResponse,
     ModelClass,
 } from "@elizaos/core";
 
 import { coingeckoProvider } from "../providers/coins";
-import { PriceLookupContent, PriceLookupSchema } from "../types.ts";
 import type { PriceResponse } from "../types.ts";
 
-export const priceTemplate = `Use JUST the last message from recent messages
-{{recentMessages}}
-
-Extract ONLY the cryptocurrency name, symbol, or ticker being asked about. Do not include words like "token", "coin", "price",
+export const priceTemplate = `From previous sentence extract only the cryptocurrency name, symbol, or ticker being asked about.
+Do not include words like "token", "coin", "price",
 unless it's part of the name like in "bitcoin" there is a "coin".
 Respond with a JSON markdown block containing only the extracted value:
 
@@ -70,29 +67,25 @@ export const getPriceAction: Action = {
                 _message
             );
 
-            // Initialize or update state
+            // Update the state with current inputs
             if (!state) {
                 state = (await runtime.composeState(_message)) as State;
             } else {
                 state = await runtime.updateRecentMessageState(state);
             }
 
-            // Generate the coin name from the message context
-            const context = composeContext({
-                state,
-                template: priceTemplate,
-            });
+            const context = `${_message.content.text}\n${priceTemplate}`;
 
-            const priceRequest = await generateObject({
+            const priceRequest = await generateMessageResponse({
                 runtime,
                 context,
                 modelClass: ModelClass.SMALL,
-                schema: PriceLookupSchema,
             });
 
-            const result = PriceLookupSchema.safeParse(priceRequest.object);
+            priceRequest.coinName;
+            const result = priceRequest.coinName as string;
 
-            if (!result.success) {
+            if (!result) {
                 callback(
                     {
                         text: "Invalid coin name specified.",
@@ -102,7 +95,7 @@ export const getPriceAction: Action = {
                 return;
             }
 
-            const searchTerm = result.data.coinName.toLowerCase();
+            const searchTerm = result.toLowerCase();
 
             // Find all matching coins in our supported coins list
             const matchingCoins = supportedCoins.filter(
