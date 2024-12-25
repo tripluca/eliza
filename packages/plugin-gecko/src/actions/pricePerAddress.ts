@@ -10,7 +10,7 @@ import {
     ModelClass,
 } from "@elizaos/core";
 
-import { AddressLookupSchema, AddressLookupContent } from "../types.ts";
+import type { PriceResponse } from "../types.ts";
 
 // Template for extracting chain and address
 export const addressTemplate = `
@@ -133,7 +133,7 @@ export const getPriceByAddressAction: Action = {
                 throw new Error(`HTTP error! status: ${priceResponse.status}`);
             }
 
-            const priceData = await priceResponse.json();
+            const priceData: PriceResponse = await priceResponse.json();
 
             // Try to find the token data regardless of case
             let tokenData =
