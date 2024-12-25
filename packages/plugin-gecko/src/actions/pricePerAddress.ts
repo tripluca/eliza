@@ -6,16 +6,14 @@ import {
     HandlerCallback,
     State,
     composeContext,
-    generateObject,
+    generateMessageResponse,
     ModelClass,
 } from "@elizaos/core";
 
 import { AddressLookupSchema, AddressLookupContent } from "../types.ts";
 
 // Template for extracting chain and address
-export const addressTemplate = `Use JUST the last message from recent messages
-{{recentMessages}}
-
+export const addressTemplate = `
 Extract the blockchain name/chain ID and token address being asked about.
 Normalize chain names: ethereum, polygon, solana, base, etc.
 Token address should be the full address string.
@@ -66,29 +64,26 @@ export const getPriceByAddressAction: Action = {
                 runtime.getSetting("COINGECKO_API_KEY") ??
                 process.env.COINGECKO_API_KEY;
 
-            // Initialize or update state
+            // Update the state with current inputs
             if (!state) {
                 state = (await runtime.composeState(_message)) as State;
             } else {
                 state = await runtime.updateRecentMessageState(state);
             }
 
-            // Generate the address lookup from the message context
+            // Use state replacements but add message at the top of template
             const context = composeContext({
                 state,
-                template: addressTemplate,
+                template: `${_message.content.text}\n${addressTemplate}`,
             });
 
-            const addressRequest = await generateObject({
+            const result = await generateMessageResponse({
                 runtime,
                 context,
                 modelClass: ModelClass.SMALL,
-                schema: AddressLookupSchema,
             });
 
-            const result = AddressLookupSchema.safeParse(addressRequest.object);
-
-            if (!result.success) {
+            if (!result) {
                 callback(
                     {
                         text: "Invalid chain ID or token address specified.",
@@ -98,8 +93,10 @@ export const getPriceByAddressAction: Action = {
                 return;
             }
 
-            const { chainId: rawChainId, tokenAddress } = result.data;
-            // Ensure chain ID is lowercase
+            const { chainId: rawChainId, tokenAddress } = result as unknown as {
+                chainId: string;
+                tokenAddress: string;
+            };
             const chainId = rawChainId.toLowerCase();
 
             // First, fetch token metadata to get the name
@@ -193,36 +190,7 @@ export const getPriceByAddressAction: Action = {
             );
         }
     },
-    examples: [
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "What's the price of token 0x4f9fd6be4a90f2620860d680c0d4d5fb53d1a825 on ethereum?",
-                },
-            },
-            {
-                user: "{{agentName}}",
-                content: {
-                    text: "Current price for Compound (COMP)\nAddress: 0x4f9fd6be4a90f2620860d680c0d4d5fb53d1a825\nChain: ethereum\nPrice: $1.234567 USD\nMarket Cap: $45.6 million USD",
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Show me the price for 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599 on ethereum",
-                },
-            },
-            {
-                user: "{{agentName}}",
-                content: {
-                    text: "Current price for Wrapped Bitcoin (WBTC)\nAddress: 0x2260fac5e5542a773aa44fbcfedf7c193bc2c599\nChain: ethereum\nPrice: $42000.123456 USD\nMarket Cap: $2.1 billion USD",
-                },
-            },
-        ],
-    ],
+    examples: [],
     similes: [
         "GET_TOKEN_PRICE_BY_ADDRESS",
         "FETCH_TOKEN_PRICE_BY_ADDRESS",

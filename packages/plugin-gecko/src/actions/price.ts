@@ -74,7 +74,11 @@ export const getPriceAction: Action = {
                 state = await runtime.updateRecentMessageState(state);
             }
 
-            const context = `${_message.content.text}\n${priceTemplate}`;
+            // Use state replacements but add message at the top of template
+            const context = composeContext({
+                state,
+                template: `${_message.content.text}\n${priceTemplate}`,
+            });
 
             const priceRequest = await generateMessageResponse({
                 runtime,
@@ -82,7 +86,6 @@ export const getPriceAction: Action = {
                 modelClass: ModelClass.SMALL,
             });
 
-            priceRequest.coinName;
             const result = priceRequest.coinName as string;
 
             if (!result) {
@@ -188,50 +191,7 @@ export const getPriceAction: Action = {
             );
         }
     },
-    examples: [
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "What's the current price of Bitcoin?",
-                },
-            },
-            {
-                user: "{{agentName}}",
-                content: {
-                    text: "Current price for Bitcoin (BTC): $45,123.45 USD\nMarket Cap: $876.5 billion USD",
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Show me ETH price",
-                },
-            },
-            {
-                user: "{{agentName}}",
-                content: {
-                    text: "Current price for Ethereum (ETH): $2,456.78 USD\nMarket Cap: $298.4 billion USD",
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Show me price for Pendle Token",
-                },
-            },
-            {
-                user: "{{agentName}}",
-                content: {
-                    text: "Current price for Pendle (PENDLE): $7.89 USD\nMarket Cap: $156.3 million USD",
-                },
-            },
-        ],
-    ],
+    examples: [],
     similes: [
         "GET_COIN_PRICE",
         "FETCH_CRYPTO_PRICE",
