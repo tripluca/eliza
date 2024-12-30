@@ -39,6 +39,15 @@ function formatMarketCap(marketCap: number): string {
     return marketCap.toString();
 }
 
+function getBaseUrl(runtime: IAgentRuntime): string {
+    const isPro =
+        (runtime.getSetting("COINGECKO_PRO") ?? process.env.COINGECKO_PRO) ===
+        "TRUE";
+    return isPro
+        ? "https://pro-api.coingecko.com/api/v3"
+        : "https://api.coingecko.com/api/v3";
+}
+
 export const getPriceByAddressAction: Action = {
     name: "GET_TOKEN_PRICE_BY_ADDRESS",
     description:
@@ -63,6 +72,10 @@ export const getPriceByAddressAction: Action = {
             const apiKey =
                 runtime.getSetting("COINGECKO_API_KEY") ??
                 process.env.COINGECKO_API_KEY;
+            const isPro =
+                (runtime.getSetting("COINGECKO_PRO") ??
+                    process.env.COINGECKO_PRO) === "TRUE";
+            const baseUrl = getBaseUrl(runtime);
 
             // Update the state with current inputs
             if (!state) {
@@ -100,12 +113,14 @@ export const getPriceByAddressAction: Action = {
             const chainId = rawChainId.toLowerCase();
 
             // First, fetch token metadata to get the name
-            const metadataUrl = `https://api.coingecko.com/api/v3/coins/${chainId}/contract/${tokenAddress}`;
+            const metadataUrl = `${baseUrl}/coins/${chainId}/contract/${tokenAddress}`;
             const metadataResponse = await fetch(metadataUrl, {
                 method: "GET",
                 headers: {
                     accept: "application/json",
-                    "x-cg-demo-api-key": apiKey,
+                    ...(isPro
+                        ? { "x-cg-pro-api-key": apiKey }
+                        : { "x-cg-demo-api-key": apiKey }),
                 },
             });
 
@@ -119,13 +134,15 @@ export const getPriceByAddressAction: Action = {
             }
 
             // Format the URL for token price lookup
-            const url = `https://api.coingecko.com/api/v3/simple/token_price/${chainId}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_market_cap=true`;
+            const url = `${baseUrl}/simple/token_price/${chainId}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_market_cap=true`;
 
             const priceResponse = await fetch(url, {
                 method: "GET",
                 headers: {
                     accept: "application/json",
-                    "x-cg-demo-api-key": apiKey,
+                    ...(isPro
+                        ? { "x-cg-pro-api-key": apiKey }
+                        : { "x-cg-demo-api-key": apiKey }),
                 },
             });
 

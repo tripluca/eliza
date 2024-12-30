@@ -7,13 +7,22 @@ export const coingeckoProvider: Provider = {
             const apiKey =
                 runtime.getSetting("COINGECKO_API_KEY") ??
                 process.env.COINGECKO_API_KEY;
+            const isPro =
+                (runtime.getSetting("COINGECKO_PRO") ??
+                    process.env.COINGECKO_PRO) === "TRUE";
 
-            const url = "https://api.coingecko.com/api/v3/coins/list";
+            const baseUrl = isPro
+                ? "https://pro-api.coingecko.com/api/v3"
+                : "https://api.coingecko.com/api/v3";
+
+            const url = `${baseUrl}/coins/list`;
             const response = await fetch(url, {
                 method: "GET",
                 headers: {
                     accept: "application/json",
-                    "x-cg-demo-api-key": apiKey,
+                    ...(isPro
+                        ? { "x-cg-pro-api-key": apiKey }
+                        : { "x-cg-demo-api-key": apiKey }),
                 },
             });
 

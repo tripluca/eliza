@@ -36,6 +36,15 @@ function formatMarketCap(marketCap: number): string {
     return marketCap.toString();
 }
 
+function getBaseUrl(runtime: IAgentRuntime): string {
+    const isPro =
+        (runtime.getSetting("COINGECKO_PRO") ?? process.env.COINGECKO_PRO) ===
+        "TRUE";
+    return isPro
+        ? "https://pro-api.coingecko.com/api/v3"
+        : "https://api.coingecko.com/api/v3";
+}
+
 export const getPriceAction: Action = {
     name: "GET_COIN_PRICE",
     description:
@@ -60,6 +69,10 @@ export const getPriceAction: Action = {
             const apiKey =
                 runtime.getSetting("COINGECKO_API_KEY") ??
                 process.env.COINGECKO_API_KEY;
+            const isPro =
+                (runtime.getSetting("COINGECKO_PRO") ??
+                    process.env.COINGECKO_PRO) === "TRUE";
+            const baseUrl = getBaseUrl(runtime);
 
             // Get the list of supported coins first
             const { supportedCoins } = await coingeckoProvider.get(
@@ -120,12 +133,14 @@ export const getPriceAction: Action = {
 
             // If we have multiple matches, we'll need to fetch prices for all of them
             const pricePromises = matchingCoins.map(async (coin) => {
-                const priceUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coin.id}&vs_currencies=usd&include_market_cap=true`;
+                const priceUrl = `${baseUrl}/simple/price?ids=${coin.id}&vs_currencies=usd&include_market_cap=true`;
                 const priceResponse = await fetch(priceUrl, {
                     method: "GET",
                     headers: {
                         accept: "application/json",
-                        "x-cg-demo-api-key": apiKey,
+                        ...(isPro
+                            ? { "x-cg-pro-api-key": apiKey }
+                            : { "x-cg-demo-api-key": apiKey }),
                     },
                 });
 
@@ -177,7 +192,7 @@ export const getPriceAction: Action = {
 
             callback(
                 {
-                    text: `Current price for ${coin.name} (${coin.symbol.toUpperCase()}): ${price.toFixed(2)} USD\nMarket Cap: ${formattedMarketCap} USD`,
+                    text: `Current price for ${coin.name} (${coin.symbol.toUpperCase()}): ${price.toFixed(2)} USD\nMarket Cap: ${formattedMarketCap} USD${multipleMatchesNote}`,
                 },
                 []
             );
