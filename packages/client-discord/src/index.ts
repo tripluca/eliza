@@ -39,7 +39,39 @@ export class DiscordClient extends EventEmitter {
     constructor(runtime: IAgentRuntime) {
         super();
 
-        this.apiToken = runtime.getSetting("DISCORD_API_TOKEN") as string;
+        // Get character-specific token using character name
+        const characterName = runtime.character.name.toUpperCase();
+        const tokenKey = `DISCORD_API_TOKEN_${characterName}`;
+        
+        // Try to get token from environment first
+        this.apiToken = process.env[tokenKey];
+        
+        // If not in environment, try character settings
+        if (!this.apiToken && runtime.character.settings?.secrets) {
+            const secretValue = runtime.character.settings.secrets[tokenKey];
+            if (typeof secretValue === 'string' && secretValue.startsWith('${') && secretValue.endsWith('}')) {
+                // It's an environment variable reference, get the actual env var
+                const envVarName = secretValue.slice(2, -1);
+                this.apiToken = process.env[envVarName];
+            } else {
+                this.apiToken = secretValue;
+            }
+        }
+        
+        elizaLogger.debug('Token resolution details:', {
+            characterName,
+            tokenKey,
+            hasToken: !!this.apiToken,
+            tokenLength: this.apiToken ? this.apiToken.length : 0,
+            tokenPrefix: this.apiToken ? this.apiToken.substring(0, 10) + '...' : 'none',
+            envVars: Object.keys(process.env).filter(key => key.includes('DISCORD')),
+            characterSecrets: Object.keys(runtime.character.settings?.secrets || {})
+        });
+
+        if (!this.apiToken) {
+            throw new Error(`Discord token not found for key: ${tokenKey}. Please ensure it is set in your .env file.`);
+        }
+
         this.client = new Client({
             intents: [
                 GatewayIntentBits.Guilds,
