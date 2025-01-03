@@ -1,0 +1,9 @@
+As we are using a forked repository, we need to be careful with modifying the original repository.
+
+We should only change code when absolutely necessary and documenting the changes well.
+
+We should only pull from the original repository when we are ready to incorporate changes into our fork.
+
+We should only push to the original repository when we are ready to incorporate changes from our fork into the original repository.
+
+We should always create a new branch from an updated main when we are ready to start working on a new feature.
