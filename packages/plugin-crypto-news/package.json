@@ -1,0 +1,35 @@
+{
+    "name": "@elizaos/plugin-crypto-news",
+    "version": "0.1.7",
+    "description": "Crypto news search plugin for ElizaOS",
+    "type": "module",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": {
+                "@elizaos/source": "./src/index.ts",
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            }
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup --format esm --dts",
+        "dev": "tsup --format esm --dts --watch",
+        "clean": "rm -rf dist .turbo node_modules"
+    },
+    "dependencies": {
+        "@elizaos/core": "workspace:*",
+        "js-tiktoken": "^1.0.7"
+    },
+    "devDependencies": {
+        "tsup": "^7.2.0",
+        "typescript": "^5.2.2"
+    }
+}
