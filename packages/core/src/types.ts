@@ -166,6 +166,9 @@ export type ModelSettings = {
 
     /** Optional telemetry configuration (experimental) */
     experimental_telemetry?: TelemetrySettings;
+
+    /** Optional callback when model is selected */
+    onSelect?: () => void;
 };
 
 /** Image model settings */
@@ -680,6 +683,7 @@ export type TelemetrySettings = {
 };
 
 export interface ModelConfiguration {
+    model?: string;
     temperature?: number;
     max_response_length?: number;
     frequency_penalty?: number;

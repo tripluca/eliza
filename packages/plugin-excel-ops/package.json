@@ -1,0 +1,33 @@
+{
+    "name": "@elizaos/plugin-excel-ops",
+    "version": "0.1.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": {
+                "@elizaos/source": "./src/index.ts",
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            }
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@elizaos/core": "workspace:*",
+        "csv-parse": "^5.5.3",
+        "csv-stringify": "^6.4.5",
+        "tsup": "8.3.5"
+    },
+    "scripts": {
+        "build": "tsup --format esm --dts",
+        "dev": "tsup --format esm --dts --watch",
+        "lint": "eslint --fix  --cache ."
+    },
+    "description": "Excel operations plugin for Eliza - Handles CSV file processing and modifications"
+}

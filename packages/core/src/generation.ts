@@ -245,204 +245,181 @@ export async function generateText({
     verifiableInferenceAdapter?: IVerifiableInferenceAdapter;
     verifiableInferenceOptions?: VerifiableInferenceOptions;
 }): Promise<string> {
-    if (!context) {
-        console.error("generateText context is empty");
-        return "";
-    }
-
-    elizaLogger.log("Generating text...");
-
-    elizaLogger.info("Generating text with options:", {
-        modelProvider: runtime.modelProvider,
-        model: modelClass,
-        verifiableInference,
-    });
-    elizaLogger.log("Using provider:", runtime.modelProvider);
-    // If verifiable inference is requested and adapter is provided, use it
-    if (verifiableInference && runtime.verifiableInferenceAdapter) {
-        elizaLogger.log(
-            "Using verifiable inference adapter:",
-            runtime.verifiableInferenceAdapter
-        );
-        try {
-            const result: VerifiableInferenceResult =
-                await runtime.verifiableInferenceAdapter.generateText(
-                    context,
-                    modelClass,
-                    verifiableInferenceOptions
-                );
-            elizaLogger.log("Verifiable inference result:", result);
-            // Verify the proof
-            const isValid =
-                await runtime.verifiableInferenceAdapter.verifyProof(result);
-            if (!isValid) {
-                throw new Error("Failed to verify inference proof");
-            }
-
-            return result.text;
-        } catch (error) {
-            elizaLogger.error("Error in verifiable inference:", error);
-            throw error;
-        }
-    }
-
-    const provider = runtime.modelProvider;
-    elizaLogger.debug("Provider settings:", {
-        provider,
-        hasRuntime: !!runtime,
-        runtimeSettings: {
-            CLOUDFLARE_GW_ENABLED: runtime.getSetting("CLOUDFLARE_GW_ENABLED"),
-            CLOUDFLARE_AI_ACCOUNT_ID: runtime.getSetting("CLOUDFLARE_AI_ACCOUNT_ID"),
-            CLOUDFLARE_AI_GATEWAY_ID: runtime.getSetting("CLOUDFLARE_AI_GATEWAY_ID")
-        }
-    });
-
-    const endpoint =
-        runtime.character.modelEndpointOverride || getEndpoint(provider);
-    const modelSettings = getModelSettings(runtime.modelProvider, modelClass);
-    let model = modelSettings.name;
-
-    // allow character.json settings => secrets to override models
-    // FIXME: add MODEL_MEDIUM support
-    switch (provider) {
-        // if runtime.getSetting("LLAMACLOUD_MODEL_LARGE") is true and modelProvider is LLAMACLOUD, then use the large model
-        case ModelProviderName.LLAMACLOUD:
-            {
-                switch (modelClass) {
-                    case ModelClass.LARGE:
-                        {
-                            model =
-                                runtime.getSetting("LLAMACLOUD_MODEL_LARGE") ||
-                                model;
-                        }
-                        break;
-                    case ModelClass.SMALL:
-                        {
-                            model =
-                                runtime.getSetting("LLAMACLOUD_MODEL_SMALL") ||
-                                model;
-                        }
-                        break;
-                }
-            }
-            break;
-        case ModelProviderName.TOGETHER:
-            {
-                switch (modelClass) {
-                    case ModelClass.LARGE:
-                        {
-                            model =
-                                runtime.getSetting("TOGETHER_MODEL_LARGE") ||
-                                model;
-                        }
-                        break;
-                    case ModelClass.SMALL:
-                        {
-                            model =
-                                runtime.getSetting("TOGETHER_MODEL_SMALL") ||
-                                model;
-                        }
-                        break;
-                }
-            }
-            break;
-        case ModelProviderName.OPENROUTER:
-            {
-                switch (modelClass) {
-                    case ModelClass.LARGE:
-                        {
-                            model =
-                                runtime.getSetting("LARGE_OPENROUTER_MODEL") ||
-                                model;
-                        }
-                        break;
-                    case ModelClass.SMALL:
-                        {
-                            model =
-                                runtime.getSetting("SMALL_OPENROUTER_MODEL") ||
-                                model;
-                        }
-                        break;
-                }
-            }
-            break;
-    }
-
-    elizaLogger.info("Selected model:", model);
-
-    const modelConfiguration = runtime.character?.settings?.modelConfig;
-    const temperature =
-        modelConfiguration?.temperature || modelSettings.temperature;
-    const frequency_penalty =
-        modelConfiguration?.frequency_penalty ||
-        modelSettings.frequency_penalty;
-    const presence_penalty =
-        modelConfiguration?.presence_penalty || modelSettings.presence_penalty;
-    const max_context_length =
-        modelConfiguration?.maxInputTokens || modelSettings.maxInputTokens;
-    const max_response_length =
-        modelConfiguration?.max_response_length ||
-        modelSettings.maxOutputTokens;
-    const experimental_telemetry =
-        modelConfiguration?.experimental_telemetry ||
-        modelSettings.experimental_telemetry;
-
-    const apiKey = runtime.token;
-
     try {
+        const provider = runtime.modelProvider;
+        const modelSettings = getModelSettings(provider, modelClass);
+        
+        elizaLogger.info("Model Selection Chain:", {
+            provider: provider,
+            modelClass: modelClass,
+            characterConfiguredModel: runtime.character?.settings?.modelConfig?.model,
+            modelSettingsName: modelSettings?.name,
+            characterName: runtime.character.name,
+            hasSystemPrompt: !!runtime.character.system,
+            modelProvider: runtime.modelProvider,
+            verifiableInference: verifiableInference
+        });
+
+        const endpoint = runtime.character.modelEndpointOverride || getEndpoint(provider);
+        const model = runtime.character?.settings?.modelConfig?.model || modelSettings.name;
+        
+        const modelConfiguration = runtime.character?.settings?.modelConfig;
+        const temperature = modelConfiguration?.temperature ?? modelSettings.temperature;
+        const max_response_length = modelConfiguration?.max_response_length ?? modelSettings.maxOutputTokens;
+        const frequency_penalty = modelConfiguration?.frequency_penalty ?? modelSettings.frequency_penalty;
+        const presence_penalty = modelConfiguration?.presence_penalty ?? modelSettings.presence_penalty;
+        const apiKey = runtime.token;
+
+        elizaLogger.debug("Using model configuration:", {
+            model,
+            endpoint,
+            temperature,
+            maxTokens: max_response_length,
+            provider,
+            modelSettings
+        });
+
+        let response = "";
+
+        elizaLogger.info("Generating text with options:", {
+            modelProvider: runtime.modelProvider,
+            model: modelClass,
+            verifiableInference,
+        });
+        elizaLogger.log("Using provider:", runtime.modelProvider);
+        // If verifiable inference is requested and adapter is provided, use it
+        if (verifiableInference && runtime.verifiableInferenceAdapter) {
+            elizaLogger.log(
+                "Using verifiable inference adapter:",
+                runtime.verifiableInferenceAdapter
+            );
+            try {
+                const result: VerifiableInferenceResult =
+                    await runtime.verifiableInferenceAdapter.generateText(
+                        context,
+                        modelClass,
+                        verifiableInferenceOptions
+                    );
+                elizaLogger.log("Verifiable inference result:", result);
+                // Verify the proof
+                const isValid =
+                    await runtime.verifiableInferenceAdapter.verifyProof(result);
+                if (!isValid) {
+                    throw new Error("Failed to verify inference proof");
+                }
+
+                return result.text;
+            } catch (error) {
+                elizaLogger.error("Error in verifiable inference:", error);
+                throw error;
+            }
+        }
+
         elizaLogger.debug(
-            `Trimming context to max length of ${max_context_length} tokens.`
+            `Trimming context to max length of ${max_response_length} tokens.`
         );
 
-        context = await trimTokens(context, max_context_length, runtime);
+        context = await trimTokens(context, max_response_length, runtime);
 
-        let response: string;
-
-        const _stop = stop || modelSettings.stop;
+        let _stop = stop || modelSettings.stop;
         elizaLogger.debug(
             `Using provider: ${provider}, model: ${model}, temperature: ${temperature}, max response length: ${max_response_length}`
         );
 
         switch (provider) {
             // OPENAI & LLAMACLOUD shared same structure.
-            case ModelProviderName.OPENAI:
-            case ModelProviderName.ALI_BAILIAN:
-            case ModelProviderName.VOLENGINE:
-            case ModelProviderName.LLAMACLOUD:
-            case ModelProviderName.NANOGPT:
-            case ModelProviderName.HYPERBOLIC:
-            case ModelProviderName.TOGETHER:
-            case ModelProviderName.NINETEEN_AI:
-            case ModelProviderName.AKASH_CHAT_API: {
-                elizaLogger.debug("Initializing OpenAI model with Cloudflare check");
-                const baseURL = getCloudflareGatewayBaseURL(runtime, 'openai') || endpoint;
-
-                //elizaLogger.debug("OpenAI baseURL result:", { baseURL });
-                const openai = createOpenAI({
-                    apiKey,
-                    baseURL,
-                    fetch: runtime.fetch,
-                });
-
-                const { text: openaiResponse } = await aiGenerateText({
-                    model: openai.languageModel(model),
-                    prompt: context,
-                    system:
-                        runtime.character.system ??
-                        settings.SYSTEM_PROMPT ??
-                        undefined,
-                    tools: tools,
-                    onStepFinish: onStepFinish,
-                    maxSteps: maxSteps,
+            case ModelProviderName.OPENAI: {
+                elizaLogger.debug("Initializing OpenAI model with detailed configuration.");
+                const openaiApiKey = runtime.token;
+                const openaiApiUrl = runtime.getSetting("OPENAI_API_URL");
+                
+                // Get model settings with fallback to o3-mini
+                const modelToUse = runtime.character?.settings?.modelConfig?.model || model || "o3-mini-2025-01-31";
+                
+                // Configure o3-mini specific settings
+                const isO3Model = modelToUse.includes("o3-mini");
+                const maxTokens = isO3Model ? 100000 : max_response_length;
+                const contextWindow = isO3Model ? 200000 : undefined;
+                
+                // Prepare API parameters based on model
+                const tokenParams = isO3Model 
+                    ? { max_completion_tokens: maxTokens }
+                    : { max_tokens: maxTokens };
+                
+                elizaLogger.info("OpenAI Model Configuration:", {
+                    configuredModel: runtime.character?.settings?.modelConfig?.model,
+                    fallbackModel: model,
+                    finalModel: modelToUse,
+                    hasApiKey: !!openaiApiKey,
+                    apiKeyPrefix: openaiApiKey ? openaiApiKey.substring(0, 8) + "..." : "none",
                     temperature: temperature,
-                    maxTokens: max_response_length,
-                    frequencyPenalty: frequency_penalty,
-                    presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
+                    ...tokenParams,
+                    contextWindow: contextWindow,
+                    isO3Model: isO3Model
                 });
 
-                response = openaiResponse;
-                console.log("Received response from OpenAI model.");
+                const openai = new OpenAI({
+                    apiKey: openaiApiKey,
+                    baseURL: openaiApiUrl || "https://api.openai.com/v1"
+                });
+
+                const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+                    {
+                        role: "user",
+                        content: context.toString()
+                    }
+                ];
+
+                if (runtime.character.system) {
+                    messages.unshift({
+                        role: "system",
+                        content: runtime.character.system
+                    });
+                }
+
+                elizaLogger.debug("Sending request to OpenAI API:", {
+                    model: modelToUse,
+                    messageCount: messages.length,
+                    hasSystemPrompt: !!runtime.character.system,
+                    temperature: temperature,
+                    ...tokenParams,
+                    isO3Model: isO3Model
+                });
+
+                try {
+                    const completion = await openai.chat.completions.create({
+                        model: modelToUse,
+                        messages,
+                        ...(isO3Model ? {} : { temperature }),
+                        ...tokenParams,
+                        frequency_penalty: frequency_penalty || 0,
+                        presence_penalty: presence_penalty || 0,
+                    });
+
+                    elizaLogger.debug("Received response from OpenAI API:", {
+                        hasChoices: !!completion.choices?.length,
+                        firstChoiceContent: !!completion.choices?.[0]?.message?.content,
+                        actualModel: completion.model,
+                        usage: completion.usage,
+                        requestedModel: modelToUse,
+                        tokenParamUsed: Object.keys(tokenParams)[0],
+                        isO3Model: isO3Model
+                    });
+
+                    response = completion.choices[0]?.message?.content || "";
+                } catch (error) {
+                    elizaLogger.error("Error calling OpenAI API:", {
+                        error: error.message,
+                        status: error.status,
+                        type: error.type,
+                        code: error.code,
+                        model: modelToUse,
+                        headers: error.headers,
+                        tokenParamUsed: Object.keys(tokenParams)[0],
+                        isO3Model: isO3Model
+                    });
+                    throw error;
+                }
                 break;
             }
 
@@ -520,7 +497,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = googleResponse;
@@ -569,7 +545,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = anthropicResponse;
@@ -599,7 +574,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = anthropicResponse;
@@ -633,7 +607,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = grokResponse;
@@ -661,7 +634,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry,
                 });
 
                 response = groqResponse;
@@ -717,7 +689,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = redpillResponse;
@@ -748,7 +719,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = openrouterResponse;
@@ -778,7 +748,6 @@ export async function generateText({
                         maxTokens: max_response_length,
                         frequencyPenalty: frequency_penalty,
                         presencePenalty: presence_penalty,
-                        experimental_telemetry: experimental_telemetry,
                     });
 
                     response = ollamaResponse;
@@ -809,7 +778,6 @@ export async function generateText({
                     maxSteps: maxSteps,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = heuristResponse;
@@ -862,7 +830,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = openaiResponse;
@@ -900,7 +867,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = galadrielResponse;
@@ -940,29 +906,97 @@ export async function generateText({
             }
 
             case ModelProviderName.VENICE: {
-                elizaLogger.debug("Initializing Venice model.");
-                const venice = createOpenAI({
-                    apiKey: apiKey,
-                    baseURL: endpoint,
+                elizaLogger.debug("Initializing Venice model with detailed configuration.");
+                const modelSettings = getModelSettings(ModelProviderName.VENICE, ModelClass.LARGE);
+                if (!modelSettings) {
+                    throw new Error(`No model settings found for Venice ${ModelClass.LARGE}`);
+                }
+
+                const veniceApiUrl = runtime.getSetting("VENICE_API_URL");
+                const veniceApiKey = runtime.token;
+                
+                elizaLogger.info("Venice API Authentication Details:", {
+                    hasApiKey: !!veniceApiKey,
+                    apiKeyPrefix: veniceApiKey ? veniceApiKey.substring(0, 8) + "..." : "none",
+                    apiKeyLength: veniceApiKey?.length || 0,
+                    baseURL: veniceApiUrl || "https://api.venice.ai/api/v1",
+                    modelName: modelSettings.name,
+                    runtimeProvider: runtime.modelProvider,
+                    characterProvider: runtime.character?.modelProvider,
+                    tokenSource: "character_settings",
+                    settingsSource: runtime.character?.settings?.secrets?.VENICE_API_KEY ? "character_secrets" : "environment"
                 });
 
-                const { text: veniceResponse } = await aiGenerateText({
-                    model: venice.languageModel(model),
-                    prompt: context,
-                    system:
-                        runtime.character.system ??
-                        settings.SYSTEM_PROMPT ??
-                        undefined,
-                    tools: tools,
-                    onStepFinish: onStepFinish,
-                    temperature: temperature,
-                    maxSteps: maxSteps,
-                    maxTokens: max_response_length,
+                const venice = new OpenAI({
+                    apiKey: veniceApiKey,
+                    baseURL: veniceApiUrl || "https://api.venice.ai/api/v1",
+                    defaultHeaders: {
+                        'Authorization': `Bearer ${veniceApiKey}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
                 });
 
-                response = veniceResponse;
-                elizaLogger.debug("Received response from Venice model.");
-                break;
+                elizaLogger.info("Using Venice model settings:", { 
+                    modelName: modelSettings.name,
+                    modelClass: ModelClass.LARGE,
+                    temperature: modelSettings.temperature,
+                    maxTokens: modelSettings.maxOutputTokens,
+                    provider: runtime.modelProvider,
+                    endpoint: veniceApiUrl || "https://api.venice.ai/api/v1"
+                });
+
+                const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+                    {
+                        role: "user",
+                        content: context.toString()
+                    }
+                ];
+
+                if (runtime.character.system) {
+                    messages.unshift({
+                        role: "system",
+                        content: runtime.character.system
+                    });
+                }
+
+                elizaLogger.debug("Sending request to Venice API with configuration:", {
+                    model: modelSettings.name,
+                    messageCount: messages.length,
+                    hasSystemPrompt: !!runtime.character.system,
+                    temperature: modelSettings.temperature,
+                    maxTokens: modelSettings.maxOutputTokens
+                });
+
+                try {
+                    const completion = await venice.chat.completions.create({
+                        model: modelSettings.name,
+                        messages,
+                        temperature: modelSettings.temperature,
+                        max_tokens: modelSettings.maxOutputTokens,
+                        frequency_penalty: modelSettings.frequency_penalty || 0,
+                        presence_penalty: modelSettings.presence_penalty || 0,
+                    });
+
+                    elizaLogger.debug("Received response from Venice API:", {
+                        hasChoices: !!completion.choices?.length,
+                        firstChoiceContent: !!completion.choices?.[0]?.message?.content
+                    });
+
+                    return completion.choices[0]?.message?.content || "";
+                } catch (error) {
+                    elizaLogger.error("Error calling Venice API:", {
+                        error: error.message,
+                        status: error.status,
+                        type: error.type,
+                        code: error.code,
+                        url: error.url,
+                        headers: error.headers,
+                        requestHeaders: error.config?.headers,
+                        requestUrl: error.config?.url
+                    });
+                    throw error;
+                }
             }
 
             case ModelProviderName.DEEPSEEK: {
@@ -988,7 +1022,6 @@ export async function generateText({
                     maxTokens: max_response_length,
                     frequencyPenalty: frequency_penalty,
                     presencePenalty: presence_penalty,
-                    experimental_telemetry: experimental_telemetry,
                 });
 
                 response = deepseekResponse;
@@ -1531,44 +1564,53 @@ export const generateImage = async (
             const base64s = await Promise.all(base64Promises);
             return { success: true, data: base64s };
         } else if (runtime.imageModelProvider === ModelProviderName.VENICE) {
-            const response = await fetch(
-                "https://api.venice.ai/api/v1/image/generate",
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${apiKey}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        model: model,
-                        prompt: data.prompt,
-                        negative_prompt: data.negativePrompt,
-                        width: data.width,
-                        height: data.height,
-                        steps: data.numIterations,
-                        seed: data.seed,
-                        style_preset: data.stylePreset,
-                        hide_watermark: data.hideWatermark,
-                    }),
-                }
-            );
-
-            const result = await response.json();
-
-            if (!result.images || !Array.isArray(result.images)) {
-                throw new Error("Invalid response format from Venice AI");
+            elizaLogger.debug("Initializing Venice image model.");
+            const imageModelSettings = getModelSettings(ModelProviderName.VENICE, ModelClass.IMAGE);
+            if (!imageModelSettings) {
+                throw new Error(`No model settings found for Venice ${ModelClass.IMAGE}`);
             }
 
-            const base64s = result.images.map((base64String) => {
-                if (!base64String) {
-                    throw new Error(
-                        "Empty base64 string in Venice AI response"
-                    );
+            const venice = new OpenAI({
+                apiKey: apiKey,
+                baseURL: runtime.getSetting("VENICE_API_URL") || "https://api.venice.ai/api/v1",
+                defaultHeaders: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
-                return `data:image/png;base64,${base64String}`;
             });
 
-            return { success: true, data: base64s };
+            elizaLogger.info("Using Venice image model settings:", { 
+                modelName: imageModelSettings.name,
+                modelClass: ModelClass.IMAGE,
+                provider: runtime.modelProvider
+            });
+
+            const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+                {
+                    role: "user",
+                    content: context.toString()
+                }
+            ];
+
+            if (runtime.character.system) {
+                messages.unshift({
+                    role: "system",
+                    content: runtime.character.system
+                });
+            }
+
+            const completion = await venice.chat.completions.create({
+                model: imageModelSettings.name,
+                messages,
+                temperature: 0.7,
+                max_tokens: 1000
+            });
+
+            return {
+                success: true,
+                data: completion.choices[0]?.message?.content ? [completion.choices[0].message.content] : []
+            };
         } else if (
             runtime.imageModelProvider === ModelProviderName.NINETEEN_AI
         ) {
@@ -1805,7 +1847,7 @@ export const generateObject = async ({
 
     const provider = runtime.modelProvider;
     const modelSettings = getModelSettings(runtime.modelProvider, modelClass);
-    const model = modelSettings.name;
+    const model = runtime.character?.settings?.modelConfig?.model || modelSettings.name;
     const temperature = modelSettings.temperature;
     const frequency_penalty = modelSettings.frequency_penalty;
     const presence_penalty = modelSettings.presence_penalty;
@@ -2038,7 +2080,7 @@ async function handleGroq({
     const baseURL = getCloudflareGatewayBaseURL(runtime, 'groq');
     elizaLogger.debug("Groq handleGroq baseURL:", { baseURL });
 
-    const groq = createGroq({ apiKey, baseURL });
+    const groq = createGroq({ apiKey, fetch: runtime.fetch, baseURL });
     return await aiGenerateObject({
         model: groq.languageModel(model),
         schema,

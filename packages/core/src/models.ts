@@ -7,6 +7,7 @@ import {
     Models,
     ModelSettings,
 } from "./types.ts";
+import { elizaLogger } from "./logger.ts";
 
 export const models: Models = {
     [ModelProviderName.OPENAI]: {
@@ -837,28 +838,52 @@ export const models: Models = {
         endpoint: "https://api.venice.ai/api/v1",
         model: {
             [ModelClass.SMALL]: {
-                name: settings.SMALL_VENICE_MODEL || "llama-3.3-70b",
+                name: settings.SMALL_VENICE_MODEL || "deepseek-r1-llama-70b",
                 stop: [],
-                maxInputTokens: 128000,
+                maxInputTokens: 32768,
                 maxOutputTokens: 8192,
-                temperature: 0.6,
+                temperature: 0.0,
+                frequency_penalty: 0.0,
+                presence_penalty: 0.0,
+                onSelect: () => {
+                    elizaLogger.debug("Selected Venice model:", {
+                        class: "SMALL",
+                        model: settings.SMALL_VENICE_MODEL || "deepseek-r1-llama-70b"
+                    });
+                }
             },
             [ModelClass.MEDIUM]: {
-                name: settings.MEDIUM_VENICE_MODEL || "llama-3.3-70b",
+                name: settings.MEDIUM_VENICE_MODEL || "deepseek-r1-llama-70b",
                 stop: [],
-                maxInputTokens: 128000,
+                maxInputTokens: 32768,
                 maxOutputTokens: 8192,
-                temperature: 0.6,
+                temperature: 0.0,
+                frequency_penalty: 0.0,
+                presence_penalty: 0.0,
+                onSelect: () => {
+                    elizaLogger.debug("Selected Venice model:", {
+                        class: "MEDIUM",
+                        model: settings.MEDIUM_VENICE_MODEL || "deepseek-r1-llama-70b"
+                    });
+                }
             },
             [ModelClass.LARGE]: {
-                name: settings.LARGE_VENICE_MODEL || "llama-3.1-405b",
+                name: settings.LARGE_VENICE_MODEL || "deepseek-r1-llama-70b",
                 stop: [],
-                maxInputTokens: 128000,
+                maxInputTokens: 32768,
                 maxOutputTokens: 8192,
-                temperature: 0.6,
+                temperature: 0.0,
+                frequency_penalty: 0.0,
+                presence_penalty: 0.0,
+                onSelect: () => {
+                    elizaLogger.debug("Selected Venice model:", {
+                        class: "LARGE",
+                        model: settings.LARGE_VENICE_MODEL || "deepseek-r1-llama-70b"
+                    });
+                }
             },
             [ModelClass.IMAGE]: {
-                name: settings.IMAGE_VENICE_MODEL || "fluently-xl",
+                name: settings.IMAGE_VENICE_MODEL || "fluently-xl"
             },
         },
     },
@@ -970,31 +995,49 @@ export const models: Models = {
         endpoint: settings.DEEPSEEK_API_URL || "https://api.deepseek.com",
         model: {
             [ModelClass.SMALL]: {
-                name: settings.SMALL_DEEPSEEK_MODEL || "deepseek-chat",
-                stop: [],
-                maxInputTokens: 128000,
+                name: settings.SMALL_DEEPSEEK_MODEL || "deepseek-reasoner",
+                stop: ["Therefore,", "Thus,", "In conclusion,"],
+                maxInputTokens: 32000,
                 maxOutputTokens: 8192,
                 frequency_penalty: 0.0,
                 presence_penalty: 0.0,
-                temperature: 0.7,
+                temperature: 0.0,
+                onSelect: () => {
+                    elizaLogger.debug("Selected DeepSeek model:", {
+                        class: "SMALL",
+                        model: settings.SMALL_DEEPSEEK_MODEL || "deepseek-reasoner"
+                    });
+                }
             },
             [ModelClass.MEDIUM]: {
-                name: settings.MEDIUM_DEEPSEEK_MODEL || "deepseek-chat",
-                stop: [],
-                maxInputTokens: 128000,
+                name: settings.MEDIUM_DEEPSEEK_MODEL || "deepseek-reasoner", 
+                stop: ["Therefore,", "Thus,", "In conclusion,"],
+                maxInputTokens: 32000,
                 maxOutputTokens: 8192,
                 frequency_penalty: 0.0,
                 presence_penalty: 0.0,
-                temperature: 0.7,
+                temperature: 0.0,
+                onSelect: () => {
+                    elizaLogger.debug("Selected DeepSeek model:", {
+                        class: "MEDIUM",
+                        model: settings.MEDIUM_DEEPSEEK_MODEL || "deepseek-reasoner"
+                    });
+                }
             },
             [ModelClass.LARGE]: {
-                name: settings.LARGE_DEEPSEEK_MODEL || "deepseek-chat",
-                stop: [],
-                maxInputTokens: 128000,
+                name: settings.LARGE_DEEPSEEK_MODEL || "deepseek-reasoner",
+                stop: ["Therefore,", "Thus,", "In conclusion,"],
+                maxInputTokens: 32000,
                 maxOutputTokens: 8192,
                 frequency_penalty: 0.0,
                 presence_penalty: 0.0,
-                temperature: 0.7,
+                temperature: 0.0,
+                onSelect: () => {
+                    elizaLogger.debug("Selected DeepSeek model:", {
+                        class: "LARGE",
+                        model: settings.LARGE_DEEPSEEK_MODEL || "deepseek-reasoner"
+                    });
+                }
             },
         },
     },
