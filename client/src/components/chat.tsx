@@ -15,7 +15,6 @@ import { apiClient } from "@/lib/api";
 import { cn, moment } from "@/lib/utils";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import CopyButton from "./copy-button";
-import ChatTtsButton from "./ui/chat/chat-tts-button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import AIWriter from "react-aiwriter";
@@ -65,13 +64,14 @@ export default function Page({ agentId }: { agentId: UUID }) {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (e.nativeEvent.isComposing) return;
-            handleSendMessage(e as unknown as React.FormEvent<HTMLFormElement>);
+            handleSendMessage(null, input);
         }
     };
 
-    const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!input) return;
+    const handleSendMessage = (e: React.FormEvent<HTMLFormElement> | null, messageText?: string) => {
+        e?.preventDefault();
+        const textToSend = messageText || input;
+        if (!textToSend) return;
 
         const attachments: IAttachment[] | undefined = selectedFile
             ? [
@@ -85,13 +85,13 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
         const newMessages = [
             {
-                text: input,
+                text: textToSend,
                 user: "user",
                 createdAt: Date.now(),
                 attachments,
             },
             {
-                text: input,
+                text: "",
                 user: "system",
                 isLoading: true,
                 createdAt: Date.now(),
@@ -104,7 +104,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
         );
 
         sendMessageMutation.mutate({
-            message: input,
+            message: textToSend,
             selectedFile: selectedFile ? selectedFile : null,
         });
 
@@ -160,6 +160,20 @@ export default function Page({ agentId }: { agentId: UUID }) {
         queryClient.getQueryData<ContentWithUser[]>(["messages", agentId]) ||
         [];
 
+    // Add initial welcome message if no messages exist
+    useEffect(() => {
+        if (messages.length === 0) {
+            queryClient.setQueryData(
+                ["messages", agentId],
+                [{
+                    text: "Ciao! Sono Stella!\nPosso aiutarti a trovare informazioni sull'alloggio, opportunità di investimento, sulla vita a Collescipoli, o rispondere alle tue domande (Sono smart, non una classica chatbot)",
+                    user: "system",
+                    createdAt: Date.now(),
+                }]
+            );
+        }
+    }, [messages.length, agentId, queryClient]);
+
     const transitions = useTransition(messages, {
         keys: (message) =>
             `${message.createdAt}-${message.user}-${message.text}`,
@@ -172,6 +186,14 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
     return (
         <div className="flex flex-col w-full h-[calc(100dvh)] p-4">
+            <div className="flex items-center justify-between mb-4 border-b pb-4">
+                <div className="flex items-center gap-2">
+                    <Avatar className="size-8 rounded-lg border select-none">
+                        <AvatarImage src="/images/assistants/stella.png" className="rounded-lg object-cover" />
+                    </Avatar>
+                    <h2 className="text-lg font-semibold">Stella</h2>
+                </div>
+            </div>
             <div className="flex-1 overflow-y-auto">
                 <ChatMessageList 
                     scrollRef={scrollRef}
@@ -180,6 +202,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
                     disableAutoScroll={disableAutoScroll}
                 >
                     {transitions((style, message: ContentWithUser) => {
+                        console.log('Rendering message:', message);
                         const variant = getMessageVariant(message?.user);
                         return (
                             <CustomAnimatedDiv
@@ -196,8 +219,8 @@ export default function Page({ agentId }: { agentId: UUID }) {
                                     className="flex flex-row items-center gap-2"
                                 >
                                     {message?.user !== "user" ? (
-                                        <Avatar className="size-8 p-1 border rounded-full select-none">
-                                            <AvatarImage src="/elizaos-icon.png" />
+                                        <Avatar className="size-8 rounded-lg border select-none">
+                                            <AvatarImage src="/images/assistants/stella.png" className="rounded-lg object-cover" />
                                         </Avatar>
                                     ) : null}
                                     <div className="flex flex-col">
@@ -242,10 +265,6 @@ export default function Page({ agentId }: { agentId: UUID }) {
                                                     <CopyButton
                                                         text={message?.text}
                                                     />
-                                                    <ChatTtsButton
-                                                        agentId={agentId}
-                                                        text={message?.text}
-                                                    />
                                                 </div>
                                             ) : null}
                                             <div
@@ -283,9 +302,34 @@ export default function Page({ agentId }: { agentId: UUID }) {
                 </ChatMessageList>
             </div>
             <div className="px-4 pb-4">
+                { /* Suggested Questions Buttons */}
+                {messages.length <= 1 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                        {
+                            [
+                                "Puoi dirmi di più sullo spazio di lavoro nell'appartamento?",
+                                "Ci sono spazi di coworking nelle vicinanze?",
+                                "Quali opzioni di trasporto sono disponibili a Collescipoli?"
+                            ].map((q) => (
+                                <Button
+                                    key={q}
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-xs h-auto py-1 px-2 whitespace-normal text-left"
+                                    disabled={sendMessageMutation.isPending}
+                                    onClick={() => {
+                                        handleSendMessage(null, q);
+                                    }}
+                                >
+                                    {q}
+                                </Button>
+                            ))
+                        }
+                    </div>
+                )}
                 <form
                     ref={formRef}
-                    onSubmit={handleSendMessage}
+                    onSubmit={(e) => handleSendMessage(e)}
                     className="relative rounded-md border bg-card"
                 >
                     {selectedFile ? (
@@ -314,7 +358,8 @@ export default function Page({ agentId }: { agentId: UUID }) {
                         onKeyDown={handleKeyDown}
                         value={input}
                         onChange={({ target }) => setInput(target.value)}
-                        placeholder="Type your message here..."
+                        placeholder={sendMessageMutation.isPending ? "Stella is thinking..." : "Type your message here..."}
+                        disabled={sendMessageMutation.isPending}
                         className="min-h-12 resize-none rounded-md bg-card border-0 p-3 shadow-none focus-visible:ring-0"
                     />
                     <div className="flex items-center p-3 pt-0">
@@ -324,6 +369,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
                                     <Button
                                         variant="ghost"
                                         size="icon"
+                                        disabled={sendMessageMutation.isPending}
                                         onClick={() => {
                                             if (fileInputRef.current) {
                                                 fileInputRef.current.click();

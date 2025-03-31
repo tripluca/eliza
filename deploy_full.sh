@@ -1,0 +1,1 @@
+#!/bin/bash; rsync -avz --exclude "node_modules" --exclude ".git" -e "ssh -i mememetraixkeypair.pem" ./ ec2-user@35.181.59.81:~/meme-matrix/ && ssh -i mememetraixkeypair.pem ec2-user@35.181.59.81 "cd ~/meme-matrix && npm install && pm2 restart all"
