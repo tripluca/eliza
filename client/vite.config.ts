@@ -29,11 +29,28 @@ export default defineConfig(({ mode }) => {
             cssMinify: true,
             sourcemap: false,
             cssCodeSplit: true,
+            rollupOptions: {
+                input: {
+                    main: path.resolve(__dirname, 'index.html'),
+                    widget: path.resolve(__dirname, 'src/widget.tsx')
+                },
+                output: {
+                    entryFileNames: '[name].js',
+                    chunkFileNames: '[name]-[hash].js',
+                    assetFileNames: '[name].[ext]'
+                }
+            }
         },
         resolve: {
             alias: {
-                "@": "/src",
+                "@": path.resolve(__dirname, './src'),
             },
         },
+        server: {
+            cors: true,
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
     };
 });

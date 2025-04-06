@@ -1,0 +1,269 @@
+ WARN  Unsupported engine: wanted: {"node":"23.3.0"} (current: {"node":"v23.10.0","pnpm":"9.15.0"})
+
+> eliza@ start:debug /Users/lucaair13/dev2/Eliza/Eliza1/eliza
+> cross-env NODE_ENV=development VERBOSE=true DEFAULT_LOG_LEVEL=debug DEBUG=eliza:* pnpm --filter "@elizaos/agent" start --isRoot
+
+.                                        |  WARN  Unsupported engine: wanted: {"node":"23.3.0"} (current: {"node":"v23.10.0","pnpm":"9.15.0"})
+docs                                     |  WARN  Unsupported engine: wanted: {"node":"23.3.0"} (current: {"node":"v23.10.0","pnpm":"9.15.0"})
+
+> @elizaos/agent@0.25.6-alpha.1 start /Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent
+> node --loader ts-node/esm src/index.ts "--isRoot"
+
+[2025-03-23 08:18:19] [32mINFO[39m: [36mLoading embedding settings:[39m
+    USE_OPENAI_EMBEDDING: "TRUE"
+    USE_OLLAMA_EMBEDDING: ""
+    OLLAMA_EMBEDDING_MODEL: "mxbai-embed-large"
+
+┌════════════════════════════════════════┐
+│          AGENTKIT PLUGIN               │
+├────────────────────────────────────────┤
+│  Initializing AgentKit Plugin...       │
+│  Version: 0.0.1                        │
+└════════════════════════════════════════┘
+[2025-03-23 08:18:21] [32mINFO[39m: [36mLoading embedding settings:[39m
+    USE_OPENAI_EMBEDDING: "TRUE"
+    USE_OLLAMA_EMBEDDING: ""
+    OLLAMA_EMBEDDING_MODEL: "mxbai-embed-large"
+
+┌═════════════════════════════════════┐
+│            EDWIN PLUGIN             │
+│                 ,_,                 │
+│                (o,o)                │
+│                {`"'}                │
+│                -"-"-                │
+├─────────────────────────────────────┤
+│  Initializing Edwin Plugin...       │
+│  Version: 0.0.1                     │
+└═════════════════════════════════════┘
+AXie2onEswBLYdZNGW3gPeaZ4yt9g6sT4KBWCpty5Xqy
+3o5msCyxFPrkw52csQAwhRwAafWiL4qYmry5Wzb3WWrDNHVFMEGcNpvyChuFaUsYdSZbv6GRrEfybJxnaL2xiLvj
+[2025-03-23 08:18:27] [32mINFO[39m: [36mLoading embedding settings:[39m
+    USE_OPENAI_EMBEDDING: "TRUE"
+    USE_OLLAMA_EMBEDDING: ""
+    OLLAMA_EMBEDDING_MODEL: "mxbai-embed-large"
+
+===============================
+      OpenAI Plugin Loaded      
+===============================
+Name      : openai-plugin
+Version   : 0.1.0
+X Account : https://x.com/Data0x88850
+GitHub    : https://github.com/0xrubusdata
+Actions   :
+  - generateTextAction
+  - generateEmbeddingAction
+  - analyzeSentimentAction
+  - transcribeAudioAction
+  - moderateContentAction
+  - editTextAction
+===============================
+
+
+┌────────────────────────────────────────┐
+│          HYPERBOLIC PLUGIN              │
+├────────────────────────────────────────┤
+│  Initializing HYPERBOLIC Services...    │
+│  Version: 1.0.0                        │
+└────────────────────────────────────────┘
+
+[36m┌────────────────────────[39m[36m┬───[39m[36m┬───[39m[36m┬───[39m[36m┬────────────────────────────────────────────────────────────────────────┐[39m
+[36m│[39m Action                 [36m│[39m H [36m│[39m V [36m│[39m E [36m│[39m Similes                                                                [36m│[39m
+[36m├────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼────────────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_HB_AVAILABLE_GPUS  [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m LIST_GPUS, SHOW_GPUS, AVAILABLE_GPUS, FIND_GPUS                        [36m│[39m
+[36m├────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼────────────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_HB_CURRENT_BALANCE [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m CHECK_BALANCE, SHOW_BALANCE, VIEW_BALANCE, BALANCE_CHECK               [36m│[39m
+[36m├────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼────────────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_HB_GPU_STATUS      [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m CHECK_GPU, GPU_STATUS, INSTANCE_STATUS, CHECK_INSTANCE, LIST_INSTANCES [36m│[39m
+[36m├────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼────────────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_HB_SPEND_HISTORY   [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m CHECK_SPENDING, VIEW_EXPENSES, SPENDING_HISTORY, COST_HISTORY          [36m│[39m
+[36m├────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼────────────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m RENT_HB_COMPUTE        [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m RENT_GPU, GET_GPU, LAUNCH_INSTANCE, START_INSTANCE                     [36m│[39m
+[36m├────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼────────────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m TERMINATE_HB_COMPUTE   [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m STOP_GPU, TERMINATE_INSTANCE, STOP_INSTANCE                            [36m│[39m
+[36m└────────────────────────[39m[36m┴───[39m[36m┴───[39m[36m┴───[39m[36m┴────────────────────────────────────────────────────────────────────────┘[39m
+
+[36m┌─────────────────────────────┐[39m
+[36m│[39m Plugin Status               [36m│[39m
+[36m├─────────────────────────────┤[39m
+[36m│[39m Name    : hyperbolic-plugin [36m│[39m
+[36m├─────────────────────────────┤[39m
+[36m│[39m Actions : 6                 [36m│[39m
+[36m├─────────────────────────────┤[39m
+[36m│[39m Status  : Loaded & Ready    [36m│[39m
+[36m└─────────────────────────────┘[39m
+
+SEI IS BEING INITIALIZED
+[2025-03-23 08:18:19] [32mINFO[39m: [36mLoading character settings:[39m
+    ARGV: [
+      "/opt/homebrew/Cellar/node/23.10.0_1/bin/node",
+      "/Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent/src/index.ts",
+      "--isRoot"
+    ]
+    CWD: "/Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent"
+[2025-03-23 08:18:19] [37mLOG[39m: [36mLoaded .env file from: /Users/lucaair13/dev2/Eliza/Eliza1/eliza/.env[39m
+[2025-03-23 08:18:19] [32mINFO[39m: [36mParsed settings:[39m
+    USE_OPENAI_EMBEDDING: "TRUE"
+    USE_OPENAI_EMBEDDING_TYPE: "string"
+    USE_OLLAMA_EMBEDDING: ""
+    USE_OLLAMA_EMBEDDING_TYPE: "string"
+    OLLAMA_EMBEDDING_MODEL: "mxbai-embed-large"
+[2025-03-23 08:18:21] [32mINFO[39m: [36mEnvironment sources[39m
+    shellVars: [
+      "AKASH_CHAT_API_KEY",
+      "AKASH_ENV",
+      "AKASH_NET",
+      "AKASH_GAS_PRICES",
+      "AKASH_GAS_ADJUSTMENT",
+      "AKASH_KEYRING_BACKEND",
+      "AKASH_FROM",
+      "AKASH_FEES",
+      "AKASH_DEPOSIT",
+      "AKASH_MNEMONIC",
+      "AKASH_WALLET_ADDRESS",
+      "AKASH_PRICING_API_URL",
+      "AKASH_DEFAULT_CPU",
+      "AKASH_DEFAULT_MEMORY",
+      "AKASH_DEFAULT_STORAGE",
+      "AKASH_SDL",
+      "AKASH_CLOSE_DEP",
+      "AKASH_CLOSE_DSEQ",
+      "AKASH_PROVIDER_INFO",
+      "AKASH_DEP_STATUS",
+      "AKASH_DEP_DSEQ",
+      "AKASH_GAS_OPERATION",
+      "AKASH_GAS_DSEQ",
+      "AKASH_MANIFEST_MODE",
+      "AKASH_MANIFEST_PATH",
+      "AKASH_MANIFEST_VALIDATION_LEVEL"
+    ]
+[2025-03-23 08:18:21] [32mINFO[39m: [36mLoading character settings:[39m
+    ARGV: [
+      "/opt/homebrew/Cellar/node/23.10.0_1/bin/node",
+      "/Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent/src/index.ts",
+      "--isRoot"
+    ]
+    CWD: "/Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent"
+[2025-03-23 08:18:21] [37mLOG[39m: [36mLoaded .env file from: /Users/lucaair13/dev2/Eliza/Eliza1/eliza/.env[39m
+[2025-03-23 08:18:21] [32mINFO[39m: [36mParsed settings:[39m
+    USE_OPENAI_EMBEDDING: "TRUE"
+    USE_OPENAI_EMBEDDING_TYPE: "string"
+    USE_OLLAMA_EMBEDDING: ""
+    USE_OLLAMA_EMBEDDING_TYPE: "string"
+    OLLAMA_EMBEDDING_MODEL: "mxbai-embed-large"
+[2025-03-23 08:18:27] [32mINFO[39m: [36mLoading character settings:[39m
+    ARGV: [
+      "/opt/homebrew/Cellar/node/23.10.0_1/bin/node",
+      "/Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent/src/index.ts",
+      "--isRoot"
+    ]
+    CWD: "/Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent"
+[2025-03-23 08:18:27] [37mLOG[39m: [36mLoaded .env file from: /Users/lucaair13/dev2/Eliza/Eliza1/eliza/.env[39m
+[2025-03-23 08:18:27] [32mINFO[39m: [36mParsed settings:[39m
+    USE_OPENAI_EMBEDDING: "TRUE"
+    USE_OPENAI_EMBEDDING_TYPE: "string"
+    USE_OLLAMA_EMBEDDING: ""
+    USE_OLLAMA_EMBEDDING_TYPE: "string"
+    OLLAMA_EMBEDDING_MODEL: "mxbai-embed-large"
+
+┌────────────────────────────────────────┐
+│          PYTH DATA PLUGIN              │
+├────────────────────────────────────────┤
+│  Initializing Pyth Data Services...    │
+│  Version: 1.0.0                        │
+└────────────────────────────────────────┘
+
+[36m┌───────────────────────────[39m[36m┬───[39m[36m┬───[39m[36m┬───[39m[36m┬──────────────────────────────────────────────────────────────────┐[39m
+[36m│[39m Action                    [36m│[39m H [36m│[39m V [36m│[39m E [36m│[39m Similes                                                          [36m│[39m
+[36m├───────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼──────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_PRICE_FEEDS           [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m FETCH_PRICE_FEEDS, LIST_PRICE_FEEDS, QUERY_PRICE_FEEDS           [36m│[39m
+[36m├───────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼──────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_PRICE_UPDATES_STREAM  [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m STREAM_PRICE_UPDATES, SUBSCRIBE_TO_PRICES, WATCH_PRICE_FEED      [36m│[39m
+[36m├───────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼──────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_LATEST_PRICE_UPDATES  [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m FETCH_LATEST_PRICES, GET_CURRENT_PRICES, CHECK_PRICE_FEED        [36m│[39m
+[36m├───────────────────────────[39m[36m┼───[39m[36m┼───[39m[36m┼───[39m[36m┼──────────────────────────────────────────────────────────────────┤[39m
+[36m│[39m GET_LATEST_PUBLISHER_CAPS [36m│[39m ✓ [36m│[39m ✓ [36m│[39m ✓ [36m│[39m FETCH_PUBLISHER_CAPS, GET_PUBLISHER_LIMITS, CHECK_PUBLISHER_CAPS [36m│[39m
+[36m└───────────────────────────[39m[36m┴───[39m[36m┴───[39m[36m┴───[39m[36m┴──────────────────────────────────────────────────────────────────┘[39m
+
+[36m┌──────────────────────────┐[39m
+[36m│[39m Plugin Status            [36m│[39m
+[36m├──────────────────────────┤[39m
+[36m│[39m Name    : pyth-data      [36m│[39m
+[36m├──────────────────────────┤[39m
+[36m│[39m Actions : 4              [36m│[39m
+[36m├──────────────────────────┤[39m
+[36m│[39m Status  : Loaded & Ready [36m│[39m
+[36m└──────────────────────────┘[39m
+
+[2025-03-23 08:18:28] [37mLOG[39m: [36mDirectClient constructor[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mInitializing SQLite database at /Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent/data/db.sqlite...[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36msqlite-vec extensions loaded successfully.[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mSuccessfully connected to SQLite database[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mUsing Database Cache...[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mCreating runtime for character Eliza[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Initializing AgentRuntime with options:[39m
+    character: "Eliza"
+    modelProvider: "llama_local"
+    characterModelProvider: "llama_local"
+[2025-03-23 08:18:28] [34mDEBUG[39m: [36m[AgentRuntime] Process working directory: /Users/lucaair13/dev2/Eliza/Eliza1/eliza/agent[39m
+[2025-03-23 08:18:28] [34mDEBUG[39m: [36m[AgentRuntime] Process knowledgeRoot: /Users/lucaair13/dev2/Eliza/Eliza1/eliza/characters/knowledge[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mAgent ID: b850bc30-45f8-0041-a00a-83df46d8555d[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Setting Model Provider:[39m
+    characterModelProvider: "llama_local"
+    optsModelProvider: "llama_local"
+    finalSelection: "llama_local"
+[2025-03-23 08:18:28] [32mINFO[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Selected model provider: llama_local[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Selected image model provider: llama_local[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Selected image vision model provider: llama_local[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: CONTINUE[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: FOLLOW_ROOM[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: UNFOLLOW_ROOM[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: IGNORE[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: NONE[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: MUTE_ROOM[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: UNMUTE_ROOM[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: DESCRIBE_IMAGE[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: browser[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service browser registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: image_description[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service image_description registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: text_generation[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service text_generation registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: pdf[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service pdf registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: speech_generation[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service speech_generation registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: transcription[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service transcription registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: video[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service video registered successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: aws_s3[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service aws_s3 registered successfully[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: WEB_SEARCH[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering service: web_search[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service web_search registered successfully[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: GENERATE_IMAGE[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: RETRIEVE_TOKEN_BALANCE[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Registering action: QUERY_BLOCKCHAIN_DATA[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service browser initialized successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mInitializing ImageDescriptionService[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service image_description initialized successfully[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mInitializing LlamaService...[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service text_generation initialized successfully[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service pdf initialized successfully[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service speech_generation initialized successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mCUDA not supported on this platform. Transcription will run on CPU.[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service transcription initialized successfully[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service video initialized successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mInitializing AwsS3Service[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service aws_s3 initialized successfully[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mEliza(b850bc30-45f8-0041-a00a-83df46d8555d) - Service web_search initialized successfully[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36minitializeClients for Eliza[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mclient keys[39m
+[2025-03-23 08:18:28] [34mDEBUG[39m: [36mStarted Eliza as b850bc30-45f8-0041-a00a-83df46d8555d[39m
+[2025-03-23 08:18:28] [33mWARN[39m: [36mPort 3000 is in use, trying 3001[39m
+[2025-03-23 08:18:28] [33mWARN[39m: [36mPort 3001 is in use, trying 3002[39m
+[2025-03-23 08:18:28] [37mLOG[39m: [36mServer started on alternate port 3002[39m
+[2025-03-23 08:18:28] [32mINFO[39m: [36mRun `pnpm start:client` to start the client and visit the outputted URL (http://localhost:5173) to chat with your agents. When running multiple agents, use client with different port `SERVER_PORT=3001 pnpm start:client`[39m
+[2025-03-23 08:18:28] [37mSUCCESS[39m: [36mREST API bound to 0.0.0.0:3002. If running locally, access it at http://localhost:3002.[39m
+[2025-03-23 08:27:28] [37mLOG[39m: [36mReceived shutdown signal, closing server...[39m
+[2025-03-23 08:27:28] [37mSUCCESS[39m: [36mServer closed successfully[39m

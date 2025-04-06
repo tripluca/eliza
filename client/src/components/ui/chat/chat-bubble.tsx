@@ -7,12 +7,12 @@ import { Button, type ButtonProps } from "../button";
 
 // ChatBubble
 const chatBubbleVariant = cva(
-    "flex gap-2 max-w-[60%] items-end relative group",
+    "flex gap-2 items-end relative group",
     {
         variants: {
             variant: {
                 received: "self-start",
-                sent: "self-end flex-row-reverse",
+                sent: "self-end flex-row-reverse max-w-[60%]",
             },
             layout: {
                 default: "",
@@ -76,7 +76,7 @@ const chatBubbleMessageVariants = cva("p-4", {
     variants: {
         variant: {
             received:
-                "bg-secondary text-secondary-foreground rounded-r-lg rounded-tl-lg",
+                "bg-white text-black rounded-r-lg rounded-tl-lg",
             sent: "bg-primary text-primary-foreground rounded-l-lg rounded-tr-lg",
         },
         layout: {

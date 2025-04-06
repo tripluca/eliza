@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Widget Example</title>
+</head>
+<body>
+    <h1>Welcome to My Website</h1>
+    <p>This is an example of how to integrate the Eliza chat widget.</p>
+
+    <!-- Chat Widget Container -->
+    <div id="chat-widget"></div>
+
+    <!-- Load the bundled widget script -->
+    <script src="https://localhost:5173/widget.js"></script>
+    
+    <!-- Initialize the chat widget -->
+    <script>
+        window.initElizaChat({
+            containerId: 'chat-widget',
+            agentId: '0ab73ab5-f1ff-095b-96a0-2d91a5831ebb',
+            position: 'bottom-right',
+            size: 'md'
+        });
+    </script>
+</body>
+</html> 

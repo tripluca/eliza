@@ -1,0 +1,358 @@
+{
+  "apartment": "Santa Maria",
+  "location": "Collescipoli, Umbria",
+  "updated": "2025-03-22",
+  "pricing": {
+    "daily": {
+      "low_season": {
+        "rate": 80,
+        "description": "January, February, November, December (excluding holidays)",
+        "minimum_stay": 3
+      },
+      "mid_season": {
+        "rate": 110,
+        "description": "March, April, May, October",
+        "minimum_stay": 3
+      },
+      "high_season": {
+        "rate": 150,
+        "description": "June, July, August, September",
+        "minimum_stay": 5
+      },
+      "holiday": {
+        "rate": 180,
+        "description": "Christmas, New Year, Easter, Italian holidays",
+        "minimum_stay": 5
+      }
+    },
+    "monthly": {
+      "low_season": {
+        "rate": 1500,
+        "description": "January, February, November, December"
+      },
+      "mid_season": {
+        "rate": 2200,
+        "description": "March, April, May, October"
+      },
+      "high_season": {
+        "rate": 3000,
+        "description": "June, July, August, September"
+      }
+    },
+    "discounts": {
+      "early_bird": {
+        "percentage": 10,
+        "description": "Booking made at least 90 days in advance"
+      },
+      "extended_stay": {
+        "percentage": 15,
+        "description": "Stays longer than 2 months"
+      },
+      "digital_nomad": {
+        "percentage": 10,
+        "description": "Valid digital nomad visa or remote work proof"
+      }
+    },
+    "extras": {
+      "cleaning_fee": 50,
+      "tourist_tax": 2,
+      "tourist_tax_description": "Per person per night, maximum 5 nights"
+    },
+    "currency": "EUR"
+  },
+  "availability": {
+    "2025-04": {
+      "available_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "booked_days": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    "2025-05": {
+      "available_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "booked_days": [
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    "2025-06": {
+      "available_days": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "booked_days": [
+        1,
+        2,
+        3,
+        4,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    "2025-07": {
+      "available_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "booked_days": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    "2025-08": {
+      "available_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "booked_days": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    },
+    "2025-09": {
+      "available_days": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "booked_days": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ]
+    },
+    "2025-10": {
+      "available_days": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "booked_days": [
+        3
+      ]
+    }
+  },
+  "booking_policies": {
+    "check_in": "3:00 PM - 8:00 PM",
+    "check_out": "By 11:00 AM",
+    "payment": {
+      "deposit": "30% at time of booking",
+      "balance": "Due 30 days before arrival",
+      "payment_methods": [
+        "Credit Card",
+        "Bank Transfer",
+        "PayPal"
+      ]
+    },
+    "cancellation": {
+      "flexible": {
+        "description": "Full refund if cancelled at least 14 days before check-in",
+        "applies_to": "Low and mid season bookings"
+      },
+      "moderate": {
+        "description": "Full refund if cancelled at least 30 days before check-in; 50% refund if cancelled at least 14 days before check-in",
+        "applies_to": "High season bookings"
+      },
+      "strict": {
+        "description": "Non-refundable",
+        "applies_to": "Holiday season bookings"
+      }
+    }
+  },
+  "contact_for_booking": {
+    "name": "Marco Rossi",
+    "email": "marco@digitalnomadslab.com",
+    "phone": "+39 333 555 7890",
+    "booking_methods": [
+      "Direct via property manager",
+      "Email",
+      "Phone"
+    ]
+  }
+}

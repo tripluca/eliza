@@ -369,11 +369,17 @@ export const models: Models = {
                     settings.GOOGLE_MODEL ||
                     "gemini-2.0-flash-exp",
                 stop: [],
+<<<<<<< HEAD
                 maxInputTokens: 128000,
                 maxOutputTokens: 8192,
                 frequency_penalty: 0.4,
                 presence_penalty: 0.4,
                 temperature: 0.7,
+=======
+                maxInputTokens: 1000000,
+                maxOutputTokens: 8192,
+                temperature: 0,
+>>>>>>> feature/dnv-customization
             },
             [ModelClass.MEDIUM]: {
                 name:
@@ -383,9 +389,13 @@ export const models: Models = {
                 stop: [],
                 maxInputTokens: 128000,
                 maxOutputTokens: 8192,
+<<<<<<< HEAD
                 frequency_penalty: 0.4,
                 presence_penalty: 0.4,
                 temperature: 0.7,
+=======
+                temperature: 0,
+>>>>>>> feature/dnv-customization
             },
             [ModelClass.LARGE]: {
                 name:
@@ -395,9 +405,13 @@ export const models: Models = {
                 stop: [],
                 maxInputTokens: 128000,
                 maxOutputTokens: 8192,
+<<<<<<< HEAD
                 frequency_penalty: 0.4,
                 presence_penalty: 0.4,
                 temperature: 0.7,
+=======
+                temperature: 0,
+>>>>>>> feature/dnv-customization
             },
             [ModelClass.EMBEDDING]: {
                 name:

@@ -2,12 +2,21 @@ import { Button } from "@/components/ui/button";
 import {
     ChatBubble,
     ChatBubbleMessage,
+<<<<<<< HEAD
     ChatBubbleTimestamp,
 } from "@/components/ui/chat/chat-bubble";
 import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { useTransition, animated, type AnimatedProps } from "@react-spring/web";
 import { Paperclip, Send, X } from "lucide-react";
+=======
+    // ChatBubbleTimestamp, // Commented out unused import
+} from "@/components/ui/chat/chat-bubble";
+import { ChatInput } from "@/components/ui/chat/chat-input";
+import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
+import { useTransition, animated, type AnimatedProps, type SpringValue } from "@react-spring/web";
+import { Send } from "lucide-react";
+>>>>>>> feature/dnv-customization
 import { useEffect, useRef, useState } from "react";
 import type { Content, UUID } from "@elizaos/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,14 +24,22 @@ import { apiClient } from "@/lib/api";
 import { cn, moment } from "@/lib/utils";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import CopyButton from "./copy-button";
+<<<<<<< HEAD
 import ChatTtsButton from "./ui/chat/chat-tts-button";
+=======
+>>>>>>> feature/dnv-customization
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import AIWriter from "react-aiwriter";
 import type { IAttachment } from "@/types";
+<<<<<<< HEAD
 import { AudioRecorder } from "./audio-recorder";
 import { Badge } from "./ui/badge";
 import { useAutoScroll } from "./ui/chat/hooks/useAutoScroll";
+=======
+import { useAutoScroll } from "@/components/ui/chat/hooks/useAutoScroll";
+import { AvatarFallback } from "@radix-ui/react-avatar";
+>>>>>>> feature/dnv-customization
 
 type ExtraContentFields = {
     user: string;
@@ -32,6 +49,7 @@ type ExtraContentFields = {
 
 type ContentWithUser = Content & ExtraContentFields;
 
+<<<<<<< HEAD
 type AnimatedDivProps = AnimatedProps<{ style: React.CSSProperties }> & {
     children?: React.ReactNode;
 };
@@ -42,6 +60,25 @@ export default function Page({ agentId }: { agentId: UUID }) {
     const [input, setInput] = useState("");
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+=======
+type AnimatedDivProps = {
+    style?: {
+        display?: string;
+        flexDirection?: string;
+        gap?: string;
+        opacity?: SpringValue<number>;
+        transform?: SpringValue<string>;
+    };
+    children?: React.ReactNode;
+};
+
+const AnimatedDiv = animated.div as React.FC<AnimatedDivProps>;
+
+export default function Page({ agentId }: { agentId: UUID }) {
+    const { toast } = useToast();
+    const [input, setInput] = useState("");
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+>>>>>>> feature/dnv-customization
     const formRef = useRef<HTMLFormElement>(null);
 
     const queryClient = useQueryClient();
@@ -65,6 +102,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             if (e.nativeEvent.isComposing) return;
+<<<<<<< HEAD
             handleSendMessage(e as unknown as React.FormEvent<HTMLFormElement>);
         }
     };
@@ -92,6 +130,25 @@ export default function Page({ agentId }: { agentId: UUID }) {
             },
             {
                 text: input,
+=======
+            handleSendMessage(null, input);
+        }
+    };
+
+    const handleSendMessage = (e: React.FormEvent<HTMLFormElement> | null, messageText?: string) => {
+        e?.preventDefault();
+        const textToSend = messageText || input;
+        if (!textToSend) return;
+
+        const newMessages = [
+            {
+                text: textToSend,
+                user: "user",
+                createdAt: Date.now(),
+            },
+            {
+                text: "",
+>>>>>>> feature/dnv-customization
                 user: "system",
                 isLoading: true,
                 createdAt: Date.now(),
@@ -104,11 +161,17 @@ export default function Page({ agentId }: { agentId: UUID }) {
         );
 
         sendMessageMutation.mutate({
+<<<<<<< HEAD
             message: input,
             selectedFile: selectedFile ? selectedFile : null,
         });
 
         setSelectedFile(null);
+=======
+            message: textToSend,
+        });
+
+>>>>>>> feature/dnv-customization
         setInput("");
         formRef.current?.reset();
     };
@@ -123,11 +186,17 @@ export default function Page({ agentId }: { agentId: UUID }) {
         mutationKey: ["send_message", agentId],
         mutationFn: ({
             message,
+<<<<<<< HEAD
             selectedFile,
         }: {
             message: string;
             selectedFile?: File | null;
         }) => apiClient.sendMessage(agentId, message, selectedFile),
+=======
+        }: {
+            message: string;
+        }) => apiClient.sendMessage(agentId, message),
+>>>>>>> feature/dnv-customization
         onSuccess: (newMessages: ContentWithUser[]) => {
             queryClient.setQueryData(
                 ["messages", agentId],
@@ -149,6 +218,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
         },
     });
 
+<<<<<<< HEAD
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file?.type.startsWith("image/")) {
@@ -156,10 +226,29 @@ export default function Page({ agentId }: { agentId: UUID }) {
         }
     };
 
+=======
+>>>>>>> feature/dnv-customization
     const messages =
         queryClient.getQueryData<ContentWithUser[]>(["messages", agentId]) ||
         [];
 
+<<<<<<< HEAD
+=======
+    // Add initial welcome message if no messages exist
+    useEffect(() => {
+        if (messages.length === 0) {
+            queryClient.setQueryData(
+                ["messages", agentId],
+                [{
+                    text: "Ciao! Sono Stella!\nPosso aiutarti a trovare informazioni sull'alloggio, opportunità di investimento, sulla vita a Collescipoli, o rispondere alle tue domande (Sono smart, non una classica chatbot)",
+                    user: "system",
+                    createdAt: Date.now(),
+                }]
+            );
+        }
+    }, [messages.length, agentId, queryClient]);
+
+>>>>>>> feature/dnv-customization
     const transitions = useTransition(messages, {
         keys: (message) =>
             `${message.createdAt}-${message.user}-${message.text}`,
@@ -168,11 +257,17 @@ export default function Page({ agentId }: { agentId: UUID }) {
         leave: { opacity: 0, transform: "translateY(10px)" },
     });
 
+<<<<<<< HEAD
     const CustomAnimatedDiv = animated.div as React.FC<AnimatedDivProps>;
 
     return (
         <div className="flex flex-col w-full h-[calc(100dvh)] p-4">
             <div className="flex-1 overflow-y-auto">
+=======
+    return (
+        <div className="flex h-full flex-col">
+            <div className="flex-1 overflow-y-auto" ref={scrollRef}>
+>>>>>>> feature/dnv-customization
                 <ChatMessageList 
                     scrollRef={scrollRef}
                     isAtBottom={isAtBottom}
@@ -182,13 +277,20 @@ export default function Page({ agentId }: { agentId: UUID }) {
                     {transitions((style, message: ContentWithUser) => {
                         const variant = getMessageVariant(message?.user);
                         return (
+<<<<<<< HEAD
                             <CustomAnimatedDiv
+=======
+                            <AnimatedDiv
+>>>>>>> feature/dnv-customization
                                 style={{
                                     ...style,
                                     display: "flex",
                                     flexDirection: "column",
                                     gap: "0.5rem",
+<<<<<<< HEAD
                                     padding: "1rem",
+=======
+>>>>>>> feature/dnv-customization
                                 }}
                             >
                                 <ChatBubble
@@ -196,14 +298,20 @@ export default function Page({ agentId }: { agentId: UUID }) {
                                     className="flex flex-row items-center gap-2"
                                 >
                                     {message?.user !== "user" ? (
+<<<<<<< HEAD
                                         <Avatar className="size-8 p-1 border rounded-full select-none">
                                             <AvatarImage src="/elizaos-icon.png" />
+=======
+                                        <Avatar className="size-20 rounded-lg border select-none">
+                                            <AvatarImage src="/images/assistants/stella.png" className="rounded-lg object-cover" />
+>>>>>>> feature/dnv-customization
                                         </Avatar>
                                     ) : null}
                                     <div className="flex flex-col">
                                         <ChatBubbleMessage
                                             isLoading={message?.isLoading}
                                         >
+<<<<<<< HEAD
                                             {message?.user !== "user" ? (
                                                 <AIWriter>
                                                     {message?.text}
@@ -278,10 +386,27 @@ export default function Page({ agentId }: { agentId: UUID }) {
                                     </div>
                                 </ChatBubble>
                             </CustomAnimatedDiv>
+=======
+                                            {
+                                                message?.text && typeof message.text === 'string'
+                                                    ? message.text.split('\n').map((line, index, arr) => (
+                                                        <span key={index}>
+                                                            {line}
+                                                            {index < arr.length - 1 && <br />} 
+                                                        </span>
+                                                    ))
+                                                    : message?.text
+                                            }
+                                        </ChatBubbleMessage>
+                                    </div>
+                                </ChatBubble>
+                            </AnimatedDiv>
+>>>>>>> feature/dnv-customization
                         );
                     })}
                 </ChatMessageList>
             </div>
+<<<<<<< HEAD
             <div className="px-4 pb-4">
                 <form
                     ref={formRef}
@@ -309,11 +434,43 @@ export default function Page({ agentId }: { agentId: UUID }) {
                             </div>
                         </div>
                     ) : null}
+=======
+            <div className="flex flex-col gap-2 p-4">
+                { /* Suggested Questions Buttons */}
+                <div className="flex flex-wrap gap-2 mb-2">
+                    {
+                        [
+                            "Puoi dirmi di più sullo spazio di lavoro nell'appartamento?",
+                            "Ci sono spazi di coworking nelle vicinanze?",
+                            "Quali opzioni di trasporto sono disponibili a Collescipoli?"
+                        ].map((q) => (
+                            <Button
+                                key={q}
+                                variant="outline"
+                                size="sm"
+                                className="text-xs h-auto py-1 px-2 whitespace-normal text-left"
+                                disabled={sendMessageMutation.isPending}
+                                onClick={() => {
+                                    handleSendMessage(null, q);
+                                }}
+                            >
+                                {q}
+                            </Button>
+                        ))
+                    }
+                </div>
+                <form
+                    ref={formRef}
+                    onSubmit={(e) => handleSendMessage(e)}
+                    className="relative rounded-md border bg-card"
+                >
+>>>>>>> feature/dnv-customization
                     <ChatInput
                         ref={inputRef}
                         onKeyDown={handleKeyDown}
                         value={input}
                         onChange={({ target }) => setInput(target.value)}
+<<<<<<< HEAD
                         placeholder="Type your message here..."
                         className="min-h-12 resize-none rounded-md bg-card border-0 p-3 shadow-none focus-visible:ring-0"
                     />
@@ -352,6 +509,13 @@ export default function Page({ agentId }: { agentId: UUID }) {
                             agentId={agentId}
                             onChange={(newInput: string) => setInput(newInput)}
                         />
+=======
+                        placeholder={sendMessageMutation.isPending ? "Stella is thinking..." : "Type your message here..."}
+                        disabled={sendMessageMutation.isPending}
+                        className="min-h-12 resize-none rounded-md bg-card border-0 p-3 shadow-none focus-visible:ring-0"
+                    />
+                    <div className="flex items-center p-3 pt-0">
+>>>>>>> feature/dnv-customization
                         <Button
                             disabled={!input || sendMessageMutation?.isPending}
                             type="submit"
