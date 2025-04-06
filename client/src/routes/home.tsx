@@ -14,6 +14,8 @@ import { NavLink, useLocation } from "react-router-dom";
 import type { UUID } from "@elizaos/core";
 import { formatAgentName } from "@/lib/utils";
 import { Skeleton } from "../components/ui/skeleton";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarImage } from "../components/ui/avatar";
 
 export default function Home() {
     const location = useLocation();
