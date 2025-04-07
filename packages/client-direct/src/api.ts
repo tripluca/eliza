@@ -65,9 +65,9 @@ export function createApiRouter(
         })
     );
 
-    router.get("/", (req, res) => {
-        res.send("Welcome, this is the REST API!");
-    });
+    // router.get("/", (req, res) => {
+    //     res.send("Welcome, this is the REST API!");
+    // }); // Comment out or remove this root route handler
 
     router.get("/hello", (req, res) => {
         res.json({ message: "Hello World!" });

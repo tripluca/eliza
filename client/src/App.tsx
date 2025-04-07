@@ -26,10 +26,7 @@ function AppLayout() {
 
     return (
         <div
-            className="dark antialiased"
-            style={{
-                colorScheme: "dark",
-            }}
+            className="antialiased"
         >
             <TooltipProvider delayDuration={0}>
                 <SidebarProvider>
@@ -59,7 +56,7 @@ function AppLayout() {
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
+            <BrowserRouter basename="/client">
                 <AppLayout />
             </BrowserRouter>
         </QueryClientProvider>

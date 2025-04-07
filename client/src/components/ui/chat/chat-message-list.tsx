@@ -3,10 +3,10 @@ import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ChatMessageListProps extends React.HTMLAttributes<HTMLDivElement> {
-    scrollRef: React.RefObject<HTMLDivElement | null>;
-    isAtBottom: boolean;
-    scrollToBottom: () => void;
-    disableAutoScroll: () => void;
+    scrollRef?: React.RefObject<HTMLDivElement | null>;
+    isAtBottom?: boolean;
+    scrollToBottom?: () => void;
+    disableAutoScroll?: () => void;
     smooth?: boolean;
 }
 
@@ -27,7 +27,7 @@ const ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(
                 {!isAtBottom && (
                     <Button
                         onClick={() => {
-                            scrollToBottom();
+                            scrollToBottom?.();
                         }}
                         size="icon"
                         variant="outline"

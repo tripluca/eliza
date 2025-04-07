@@ -1,6 +1,12 @@
 import type { UUID, Character } from "@elizaos/core";
 
-const BASE_URL = `http://localhost:${import.meta.env.VITE_SERVER_PORT}`;
+// Determine BASE_URL dynamically
+const urlParams = new URLSearchParams(window.location.search);
+const isEmbedded = urlParams.get('mode') === 'embedded';
+
+const BASE_URL = isEmbedded
+    ? '' // Use relative path for same-origin requests when embedded
+    : `http://localhost:${import.meta.env.VITE_SERVER_PORT || '3001'}`; // Fallback to 3001 if VITE_SERVER_PORT is not set
 
 const fetcher = async ({
     url,

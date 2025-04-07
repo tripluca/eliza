@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
     const envDir = path.resolve(__dirname, "..");
     const env = loadEnv(mode, envDir, "");
     return {
+        base: '/client/',
         plugins: [
             react(),
             viteCompression({
